@@ -1,0 +1,9 @@
+export { default as CorporateHeroSection } from './CorporateHeroSection';
+export { default as BusinessCaseSection } from './BusinessCaseSection';
+export { default as WhatWeHelpSection } from './WhatWeHelpSection';
+export { default as ServicesSection } from './ServicesSection';
+export { default as CsrComplianceSection } from './CsrComplianceSection';
+export { default as ProvenResultsSection } from './ProvenResultsSection';
+export { default as HowPartnershipWorksSection } from './HowPartnershipWorksSection';
+export { default as AlignedMovementSection } from './AlignedMovementSection';
+export { default as CorporateClosingCtaSection } from './CorporateClosingCtaSection';

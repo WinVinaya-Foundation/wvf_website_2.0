@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DonationScheme {
+  STUDENT_ENGLISH
+  STUDENT_ENGLISH_SOFTSKILLS
+  STUDENT_ENGLISH_SOFTSKILLS_IT_BFSI
+  RURAL_ENTREPRENEURS
+  GENERAL
+}
+
+enum DonationStatus {
+  CREATED
+  PAID
+  FAILED
+  CANCELLED
+}
+
+model Donation {
+  id          String         @id @default(cuid())
+  reference   String         @unique
+  scheme      DonationScheme
+  schemeLabel String
+  amountPaise Int
+  currency    String         @default("INR")
+
+  donorName    String
+  donorEmail   String
+  donorPan     String
+  donorMobile  String
+  donorPhone   String?
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  pincode      String
+
+  razorpayOrderId   String    @unique
+  razorpayPaymentId String?   @unique
+  razorpaySignature String?
+  paymentMethod     String?
+  vpa               String?
+  razorpayCreatedAt DateTime?
+
+  status DonationStatus @default(CREATED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([donorEmail])
+  @@index([createdAt])
+}

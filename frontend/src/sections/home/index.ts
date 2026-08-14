@@ -1,0 +1,12 @@
+export { default as HeroSection } from './HeroSection';
+export { default as ValueWeBringSection } from './ValueWeBringSection';
+export { default as SdgSection } from './SdgSection';
+export { default as PrimaryCtaBanner } from './PrimaryCtaBanner';
+export { default as AboutSection } from './AboutSection';
+export { default as WhatWeDoSection } from './WhatWeDoSection';
+export { default as ProofItWorksSection } from './ProofItWorksSection';
+export { default as AwardsSection } from './AwardsSection';
+export { default as PartnersSection } from './PartnersSection';
+export { default as TestimonialsSection } from './TestimonialsSection';
+export { default as NewsStripSection } from './NewsStripSection';
+export { default as ClosingCtaSection } from './ClosingCtaSection';
