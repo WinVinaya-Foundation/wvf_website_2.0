@@ -3,6 +3,7 @@ import MainLayout from '../layout/MainLayout';
 import { navGroups } from '../layout/NavBar';
 import { legalLinks } from '../layout/Footer/footerLinks';
 import {
+  AdminDashboardPage,
   AdminLoginPage,
   BlogPage,
   BlogPostPage,
@@ -111,18 +112,38 @@ const builtPageRoutes = [
   createRoute({ getParentRoute: () => rootRoute, path: BUILT_PATHS[21], component: DonatePage }),
 ];
 
+function hasAdminSession(): boolean {
+  return !!localStorage.getItem('accessToken');
+}
+
 const adminLoginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin/login',
+  beforeLoad: () => {
+    if (hasAdminSession()) {
+      throw redirect({ to: '/admin/dashboard' });
+    }
+  },
   component: AdminLoginPage,
 });
 
-// Admin only has a login page so far — send bare /admin there instead of 404ing.
+const adminDashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/dashboard',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminDashboardPage,
+});
+
+// Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin',
   beforeLoad: () => {
-    throw redirect({ to: '/admin/login' });
+    throw redirect({ to: hasAdminSession() ? '/admin/dashboard' : '/admin/login' });
   },
 });
 
@@ -174,6 +195,7 @@ const routeTree = rootRoute.addChildren([
   blogPostRoute,
   donationThankYouRoute,
   adminLoginRoute,
+  adminDashboardRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);

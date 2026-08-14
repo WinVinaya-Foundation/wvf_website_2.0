@@ -4,8 +4,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
+import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, CardContent, TextField } from '../../components';
-import { login, type AdminUser } from '../../service/adminAuthService';
+import { login } from '../../service/adminAuthService';
 import logo from '../../assets/logo/winvinaya_foundation.png';
 
 const loginFormSchema = z.object({
@@ -16,8 +17,8 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function AdminLoginPage() {
+  const navigate = useNavigate();
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [loggedInUser, setLoggedInUser] = useState<AdminUser | null>(null);
   const {
     control,
     handleSubmit,
@@ -30,9 +31,9 @@ export default function AdminLoginPage() {
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
     try {
-      const { token, user } = await login(values);
+      const { token } = await login(values);
       localStorage.setItem('accessToken', token);
-      setLoggedInUser(user);
+      navigate({ to: '/admin/dashboard' });
     } catch (error) {
       const message = axios.isAxiosError(error) && typeof error.response?.data?.error === 'string'
         ? error.response.data.error
@@ -40,43 +41,6 @@ export default function AdminLoginPage() {
       setSubmitError(message);
     }
   });
-
-  function handleLogout() {
-    localStorage.removeItem('accessToken');
-    setLoggedInUser(null);
-  }
-
-  if (loggedInUser) {
-    return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          bgcolor: 'background.default',
-          px: 2,
-        }}
-      >
-        <Card sx={{ width: '100%', maxWidth: 400, boxShadow: (theme) => theme.shadows[6] }}>
-          <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-            <Stack spacing={2.5} sx={{ alignItems: 'center', textAlign: 'center' }}>
-              <Box component="img" src={logo} alt="WinVinaya Foundation" sx={{ height: 48 }} />
-              <Typography variant="h5" component="h1">
-                Welcome, {loggedInUser.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Signed in as {loggedInUser.email} ({loggedInUser.role})
-              </Typography>
-              <Button variant="outlined" color="primary" onClick={handleLogout}>
-                Sign out
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Box>
-    );
-  }
 
   return (
     <Box
