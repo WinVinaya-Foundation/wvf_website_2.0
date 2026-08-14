@@ -10,11 +10,11 @@ import { Button, SectionContainer, SectionHeading, TextField } from '../../compo
 import { useRazorpayCheckout } from '../../hooks/useRazorpayCheckout';
 import { donationTiers, indianStates } from '../../pages/donate/donateContent';
 import {
-  cancelDonationOrder,
-  createDonationOrder,
-  verifyDonationPayment,
+  useCancelDonationOrderMutation,
+  useCreateDonationOrderMutation,
+  useVerifyDonationPaymentMutation,
   type DonationScheme,
-} from '../../service/donationService';
+} from '../../store/api/donationsApi';
 
 const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 const mobileRegex = /^[6-9]\d{9}$/;
@@ -76,6 +76,9 @@ export interface DonationFormSectionProps {
 export default function DonationFormSection({ selectedScheme, onSelectScheme }: DonationFormSectionProps) {
   const navigate = useNavigate();
   const { open: openCheckout } = useRazorpayCheckout();
+  const [createOrder] = useCreateDonationOrderMutation();
+  const [verifyPayment] = useVerifyDonationPaymentMutation();
+  const [cancelOrder] = useCancelDonationOrderMutation();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
@@ -107,7 +110,7 @@ export default function DonationFormSection({ selectedScheme, onSelectScheme }: 
   const onSubmit = async (values: DonationFormValues) => {
     setSubmitError(null);
     try {
-      const order = await createDonationOrder({
+      const order = await createOrder({
         scheme: values.scheme,
         amount: values.scheme === 'GENERAL' ? Number(values.amount) : undefined,
         donor: {
@@ -122,7 +125,7 @@ export default function DonationFormSection({ selectedScheme, onSelectScheme }: 
           state: values.state,
           pincode: values.pincode,
         },
-      });
+      }).unwrap();
 
       openCheckout({
         key: order.razorpayKeyId,
@@ -142,11 +145,15 @@ export default function DonationFormSection({ selectedScheme, onSelectScheme }: 
         },
         theme: { color: '#FAA43A' },
         handler: (response) => {
-          verifyDonationPayment(order.reference, {
-            razorpayOrderId: response.razorpay_order_id,
-            razorpayPaymentId: response.razorpay_payment_id,
-            razorpaySignature: response.razorpay_signature,
+          verifyPayment({
+            reference: order.reference,
+            payload: {
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            },
           })
+            .unwrap()
             .catch(() => undefined)
             .finally(() => {
               navigate({ to: '/donate/thank-you/$reference', params: { reference: order.reference } });
@@ -154,7 +161,8 @@ export default function DonationFormSection({ selectedScheme, onSelectScheme }: 
         },
         modal: {
           ondismiss: () => {
-            cancelDonationOrder(order.reference)
+            cancelOrder(order.reference)
+              .unwrap()
               .catch(() => undefined)
               .finally(() => {
                 navigate({ to: '/donate/thank-you/$reference', params: { reference: order.reference } });

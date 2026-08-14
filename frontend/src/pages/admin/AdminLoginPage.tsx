@@ -3,10 +3,10 @@ import { Alert, Box, Stack, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
 import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, CardContent, TextField } from '../../components';
-import { login } from '../../service/adminAuthService';
+import { useLoginMutation } from '../../store/api/authApi';
+import type { ApiError } from '../../store/api/baseApi';
 import logo from '../../assets/logo/winvinaya_foundation.png';
 
 const loginFormSchema = z.object({
@@ -18,11 +18,12 @@ type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { identifier: '', password: '' },
@@ -31,13 +32,10 @@ export default function AdminLoginPage() {
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
     try {
-      const { token } = await login(values);
-      localStorage.setItem('accessToken', token);
+      await login(values).unwrap();
       navigate({ to: '/admin/dashboard' });
     } catch (error) {
-      const message = axios.isAxiosError(error) && typeof error.response?.data?.error === 'string'
-        ? error.response.data.error
-        : 'Login failed. Please check your credentials and try again.';
+      const message = (error as ApiError)?.message || 'Login failed. Please check your credentials and try again.';
       setSubmitError(message);
     }
   });
@@ -100,8 +98,8 @@ export default function AdminLoginPage() {
               )}
             />
 
-            <Button type="submit" variant="contained" color="primary" size="large" disabled={isSubmitting} fullWidth>
-              {isSubmitting ? 'Signing in…' : 'Sign in'}
+            <Button type="submit" variant="contained" color="primary" size="large" disabled={isLoading} fullWidth>
+              {isLoading ? 'Signing in…' : 'Sign in'}
             </Button>
           </Stack>
         </CardContent>

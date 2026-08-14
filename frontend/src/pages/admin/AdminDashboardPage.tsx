@@ -1,35 +1,12 @@
-import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { useNavigate } from '@tanstack/react-router';
 import AdminLayout from '../../layout/AdminLayout/AdminLayout';
 import { Card, CardContent } from '../../components';
-import { getCurrentUser, type AdminUser } from '../../service/adminAuthService';
+import { useAdminSession } from '../../hooks/useAdminSession';
 
 export default function AdminDashboardPage() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<AdminUser | null>(null);
+  const { user, isLoading } = useAdminSession();
 
-  useEffect(() => {
-    let cancelled = false;
-    getCurrentUser()
-      .then((fetchedUser) => {
-        if (!cancelled) setUser(fetchedUser);
-      })
-      .catch(() => {
-        localStorage.removeItem('accessToken');
-        navigate({ to: '/admin/login' });
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [navigate]);
-
-  function handleLogout() {
-    localStorage.removeItem('accessToken');
-    navigate({ to: '/admin/login' });
-  }
-
-  if (!user) {
+  if (isLoading || !user) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress />
@@ -38,7 +15,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <AdminLayout user={user} title="Dashboard" onLogout={handleLogout}>
+    <AdminLayout user={user} title="Dashboard">
       <Stack spacing={3}>
         <Typography variant="h4" component="h1">
           Welcome, {user.name.split(' ')[0]}

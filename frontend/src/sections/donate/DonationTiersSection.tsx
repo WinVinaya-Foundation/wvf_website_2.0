@@ -3,7 +3,7 @@ import { alpha } from '@mui/material/styles';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { Button, SectionContainer, SectionHeading } from '../../components';
 import { donationTiers } from '../../pages/donate/donateContent';
-import type { DonationScheme } from '../../service/donationService';
+import type { DonationScheme } from '../../store/api/donationsApi';
 
 const TIER_ACCENTS = ['primary', 'info', 'secondary', 'primary', 'secondary'] as const;
 

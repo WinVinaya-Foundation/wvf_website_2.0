@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { useNavigate } from '@tanstack/react-router';
 import CurrencyRupeeRoundedIcon from '@mui/icons-material/CurrencyRupeeRounded';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
@@ -8,8 +6,8 @@ import PendingActionsRoundedIcon from '@mui/icons-material/PendingActionsRounded
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import AdminLayout from '../../layout/AdminLayout/AdminLayout';
 import { DataGrid, StatCard, StatusChip, type StatusChipStatus } from '../../components';
-import { getCurrentUser, type AdminUser } from '../../service/adminAuthService';
-import { exportDonors, getDonors, type AdminDonationListItem, type DonorStats } from '../../service/adminDonorsService';
+import { useAdminSession } from '../../hooks/useAdminSession';
+import { useGetDonorsQuery, useLazyExportDonorsQuery, type AdminDonationListItem } from '../../store/api/donorsApi';
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 
@@ -29,44 +27,11 @@ const statusChipMap: Record<AdminDonationListItem['status'], { status: StatusChi
 };
 
 export default function AdminDonorsPage() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<AdminUser | null>(null);
-  const [donations, setDonations] = useState<AdminDonationListItem[] | null>(null);
-  const [stats, setStats] = useState<DonorStats | null>(null);
+  const { user, isLoading: isSessionLoading } = useAdminSession();
+  const { data: donors, isFetching, refetch } = useGetDonorsQuery();
+  const [triggerExport] = useLazyExportDonorsQuery();
 
-  const loadDonors = useCallback(async () => {
-    const donors = await getDonors();
-    setDonations(donors.donations);
-    setStats(donors.stats);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      try {
-        const [currentUser] = await Promise.all([getCurrentUser(), loadDonors()]);
-        if (!cancelled) setUser(currentUser);
-      } catch {
-        if (!cancelled) {
-          localStorage.removeItem('accessToken');
-          navigate({ to: '/admin/login' });
-        }
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [navigate, loadDonors]);
-
-  function handleLogout() {
-    localStorage.removeItem('accessToken');
-    navigate({ to: '/admin/login' });
-  }
-
-  if (!user || !donations || !stats) {
+  if (isSessionLoading || !user || !donors) {
     return (
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <CircularProgress />
@@ -74,8 +39,10 @@ export default function AdminDonorsPage() {
     );
   }
 
+  const { donations, stats } = donors;
+
   return (
-    <AdminLayout user={user} title="Donor Info" onLogout={handleLogout}>
+    <AdminLayout user={user} title="Donor Info">
       <Stack spacing={3}>
         <Typography variant="h4" component="h1">
           Donor Info
@@ -152,7 +119,10 @@ export default function AdminDonorsPage() {
           getRowKey={(row) => row.id}
           getSearchValue={(row) => `${row.donorName} ${row.donorEmail} ${row.donorMobile} ${row.schemeLabel}`}
           searchPlaceholder="Search donors…"
-          onRefresh={loadDonors}
+          onRefresh={() => {
+            refetch();
+          }}
+          loading={isFetching}
           emptyMessage="No donations yet"
           stickyHeader
           maxHeight={560}
@@ -166,7 +136,7 @@ export default function AdminDonorsPage() {
             { header: 'Status', value: (row) => statusChipMap[row.status].label },
             { header: 'Date', value: (row) => formatDate(row.createdAt) },
           ]}
-          onExportAll={({ from, to }) => exportDonors({ from, to })}
+          onExportAll={(range) => triggerExport(range).unwrap()}
         />
       </Stack>
     </AdminLayout>

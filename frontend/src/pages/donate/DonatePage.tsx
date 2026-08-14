@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { DonationScheme } from '../../service/donationService';
+import type { DonationScheme } from '../../store/api/donationsApi';
 import {
   DonateClosingCtaSection,
   DonateHeroSection,

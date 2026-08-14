@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Link, useParams } from '@tanstack/react-router';
@@ -6,7 +6,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import SearchOffRoundedIcon from '@mui/icons-material/SearchOffRounded';
 import { Button, DataTable, LoadingSpinner, SectionContainer, StatusPage } from '../../components';
-import { getDonationReceipt, type DonationReceipt } from '../../service/donationService';
+import { useGetDonationReceiptQuery } from '../../store/api/donationsApi';
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
 
@@ -36,24 +36,13 @@ function useNoIndex() {
 export default function DonateThankYouPage() {
   useNoIndex();
   const { reference } = useParams({ strict: false });
-  const [receipt, setReceipt] = useState<DonationReceipt | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'not-found'>('loading');
+  const {
+    data: receipt,
+    isLoading,
+    isError,
+  } = useGetDonationReceiptQuery(reference ?? '', { skip: !reference });
 
-  useEffect(() => {
-    if (!reference) {
-      setStatus('not-found');
-      return;
-    }
-    setStatus('loading');
-    getDonationReceipt(reference)
-      .then((data) => {
-        setReceipt(data);
-        setStatus('ready');
-      })
-      .catch(() => setStatus('not-found'));
-  }, [reference]);
-
-  if (status === 'loading') {
+  if (isLoading) {
     return (
       <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <LoadingSpinner />
@@ -61,7 +50,7 @@ export default function DonateThankYouPage() {
     );
   }
 
-  if (status === 'not-found' || !receipt) {
+  if (isError || !receipt) {
     return (
       <StatusPage
         icon={<SearchOffRoundedIcon fontSize="inherit" />}

@@ -21,9 +21,12 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { Link, useRouterState } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
-import type { AdminUser } from '../../service/adminAuthService';
+import type { AdminUser } from '../../store/api/authApi';
+import { baseApi } from '../../store/api/baseApi';
+import { clearToken } from '../../store/slices/authSlice';
+import { useAppDispatch } from '../../store/hooks';
 
 const DRAWER_WIDTH = 260;
 
@@ -41,16 +44,24 @@ const navItems: AdminNavItem[] = [
 interface AdminLayoutProps {
   user: AdminUser;
   title: string;
-  onLogout: () => void;
   children: ReactNode;
 }
 
-export default function AdminLayout({ user, title, onLogout, children }: AdminLayoutProps) {
+export default function AdminLayout({ user, title, children }: AdminLayoutProps) {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+
+  function handleLogout() {
+    dispatch(clearToken());
+    // Drops every cached query result (donors, current user, …) so the next login starts clean.
+    dispatch(baseApi.util.resetApiState());
+    navigate({ to: '/admin/login' });
+  }
 
   const drawerContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -131,7 +142,7 @@ export default function AdminLayout({ user, title, onLogout, children }: AdminLa
             <MenuItem
               onClick={() => {
                 setMenuAnchor(null);
-                onLogout();
+                handleLogout();
               }}
             >
               <ListItemIcon>

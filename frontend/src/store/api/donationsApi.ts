@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { baseApi } from './baseApi';
 
 export type DonationScheme =
   | 'STUDENT_ENGLISH'
@@ -67,22 +67,26 @@ export interface DonationReceipt {
   createdAt: string;
 }
 
-export async function createDonationOrder(payload: CreateDonationOrderPayload): Promise<CreateDonationOrderResponse> {
-  const { data } = await apiClient.post<CreateDonationOrderResponse>('/donations/orders', payload);
-  return data;
-}
+export const donationsApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    createDonationOrder: builder.mutation<CreateDonationOrderResponse, CreateDonationOrderPayload>({
+      query: (payload) => ({ url: '/donations/orders', method: 'POST', data: payload }),
+    }),
+    verifyDonationPayment: builder.mutation<{ verified: true }, { reference: string; payload: VerifyDonationPaymentPayload }>({
+      query: ({ reference, payload }) => ({ url: `/donations/${reference}/verify`, method: 'POST', data: payload }),
+    }),
+    cancelDonationOrder: builder.mutation<{ status: DonationStatus }, string>({
+      query: (reference) => ({ url: `/donations/${reference}/cancel`, method: 'POST' }),
+    }),
+    getDonationReceipt: builder.query<DonationReceipt, string>({
+      query: (reference) => ({ url: `/donations/${reference}`, method: 'GET' }),
+    }),
+  }),
+});
 
-export async function verifyDonationPayment(reference: string, payload: VerifyDonationPaymentPayload): Promise<{ verified: true }> {
-  const { data } = await apiClient.post<{ verified: true }>(`/donations/${reference}/verify`, payload);
-  return data;
-}
-
-export async function cancelDonationOrder(reference: string): Promise<{ status: DonationStatus }> {
-  const { data } = await apiClient.post<{ status: DonationStatus }>(`/donations/${reference}/cancel`);
-  return data;
-}
-
-export async function getDonationReceipt(reference: string): Promise<DonationReceipt> {
-  const { data } = await apiClient.get<DonationReceipt>(`/donations/${reference}`);
-  return data;
-}
+export const {
+  useCreateDonationOrderMutation,
+  useVerifyDonationPaymentMutation,
+  useCancelDonationOrderMutation,
+  useGetDonationReceiptQuery,
+} = donationsApi;

@@ -1,5 +1,5 @@
 import type { CtaLink } from '../../model/content';
-import type { DonationScheme } from '../../service/donationService';
+import type { DonationScheme } from '../../store/api/donationsApi';
 
 export const donateHero = {
   eyebrow: 'Donate',
