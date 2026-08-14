@@ -8,6 +8,8 @@ const envSchema = z.object({
   RAZORPAY_KEY_SECRET: z.string().min(1, 'RAZORPAY_KEY_SECRET is required'),
   FRONTEND_ORIGIN: z.string().min(1).default('http://localhost:5173'),
   MIN_GENERAL_DONATION_PAISE: z.coerce.number().int().positive().default(50000),
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
+  JWT_EXPIRES_IN: z.string().min(1).default('12h'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 

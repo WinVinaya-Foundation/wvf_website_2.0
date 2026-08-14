@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './env.js';
+import { authRouter } from './auth/auth.routes.js';
 import { donationsRouter } from './donations/donations.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -16,6 +17,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/api/auth', authRouter);
 app.use('/api/donations', donationsRouter);
 
 app.use(notFoundHandler);

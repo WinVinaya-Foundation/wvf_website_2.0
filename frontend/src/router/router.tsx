@@ -1,8 +1,9 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter, Outlet, redirect, useLocation } from '@tanstack/react-router';
 import MainLayout from '../layout/MainLayout';
 import { navGroups } from '../layout/NavBar';
 import { legalLinks } from '../layout/Footer/footerLinks';
 import {
+  AdminLoginPage,
   BlogPage,
   BlogPostPage,
   CareersPage,
@@ -32,12 +33,22 @@ import {
   WinVinayaAcademyPage,
 } from '../pages';
 
-const rootRoute = createRootRoute({
-  component: () => (
+// The admin section is a separate surface with no public-site nav/footer chrome.
+function RootComponent() {
+  const location = useLocation();
+  if (location.pathname.startsWith('/admin')) {
+    return <Outlet />;
+  }
+
+  return (
     <MainLayout>
       <Outlet />
     </MainLayout>
-  ),
+  );
+}
+
+const rootRoute = createRootRoute({
+  component: RootComponent,
   notFoundComponent: NotFoundPage,
 });
 
@@ -100,6 +111,21 @@ const builtPageRoutes = [
   createRoute({ getParentRoute: () => rootRoute, path: BUILT_PATHS[21], component: DonatePage }),
 ];
 
+const adminLoginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/login',
+  component: AdminLoginPage,
+});
+
+// Admin only has a login page so far — send bare /admin there instead of 404ing.
+const adminIndexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  beforeLoad: () => {
+    throw redirect({ to: '/admin/login' });
+  },
+});
+
 // Not part of BUILT_PATHS/navPaths since it's a dynamic detail route, not a static nav destination.
 const blogPostRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -147,6 +173,8 @@ const routeTree = rootRoute.addChildren([
   ...builtPageRoutes,
   blogPostRoute,
   donationThankYouRoute,
+  adminLoginRoute,
+  adminIndexRoute,
   ...placeholderRoutes,
 ]);
 
