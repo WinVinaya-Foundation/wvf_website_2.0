@@ -24,6 +24,9 @@ export interface DataTableProps<T> {
   emptyMessage?: string;
   stickyHeader?: boolean;
   maxHeight?: number | string;
+  /** Drops the container's own border/radius — for nesting inside another bordered
+   * surface (e.g. DataGrid's Card) where an outer boundary already exists. */
+  disableContainerStyles?: boolean;
 }
 
 export default function DataTable<T>({
@@ -33,9 +36,12 @@ export default function DataTable<T>({
   emptyMessage = 'No data yet',
   stickyHeader = false,
   maxHeight,
+  disableContainerStyles = false,
 }: DataTableProps<T>) {
   return (
-    <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, maxHeight }}>
+    <TableContainer
+      sx={disableContainerStyles ? { maxHeight } : { border: '1px solid', borderColor: 'divider', borderRadius: 2, maxHeight }}
+    >
       <MuiTable stickyHeader={stickyHeader}>
         <TableHead>
           <TableRow>

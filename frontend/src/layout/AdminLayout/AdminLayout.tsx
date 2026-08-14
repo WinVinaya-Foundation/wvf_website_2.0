@@ -19,6 +19,7 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Link, useRouterState } from '@tanstack/react-router';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
@@ -32,7 +33,10 @@ interface AdminNavItem {
   icon: ReactNode;
 }
 
-const navItems: AdminNavItem[] = [{ label: 'Dashboard', to: '/admin/dashboard', icon: <DashboardRoundedIcon /> }];
+const navItems: AdminNavItem[] = [
+  { label: 'Dashboard', to: '/admin/dashboard', icon: <DashboardRoundedIcon /> },
+  { label: 'Donor Info', to: '/admin/donors', icon: <GroupsRoundedIcon /> },
+];
 
 interface AdminLayoutProps {
   user: AdminUser;

@@ -4,6 +4,7 @@ import { navGroups } from '../layout/NavBar';
 import { legalLinks } from '../layout/Footer/footerLinks';
 import {
   AdminDashboardPage,
+  AdminDonorsPage,
   AdminLoginPage,
   BlogPage,
   BlogPostPage,
@@ -138,6 +139,17 @@ const adminDashboardRoute = createRoute({
   component: AdminDashboardPage,
 });
 
+const adminDonorsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/donors',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminDonorsPage,
+});
+
 // Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -196,6 +208,7 @@ const routeTree = rootRoute.addChildren([
   donationThankYouRoute,
   adminLoginRoute,
   adminDashboardRoute,
+  adminDonorsRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);

@@ -136,6 +136,61 @@ export async function cancelOrder(reference: string) {
   return { status: updated.status };
 }
 
+export interface ListDonationsParams {
+  from?: Date;
+  to?: Date;
+  /** Omit for no cap — used by the full-range export, where the whole match set is wanted. */
+  limit?: number;
+}
+
+export async function listDonationsForAdmin(params: ListDonationsParams = {}) {
+  const { from, to, limit = 200 } = params;
+
+  const donations = await prisma.donation.findMany({
+    where: from || to ? { createdAt: { ...(from ? { gte: from } : {}), ...(to ? { lte: to } : {}) } } : undefined,
+    orderBy: { createdAt: 'desc' },
+    ...(limit ? { take: limit } : {}),
+  });
+
+  return donations.map((donation) => ({
+    id: donation.id,
+    reference: donation.reference,
+    donorName: donation.donorName,
+    donorEmail: donation.donorEmail,
+    donorMobile: donation.donorMobile,
+    schemeLabel: donation.schemeLabel,
+    amountPaise: donation.amountPaise,
+    currency: donation.currency,
+    status: donation.status,
+    createdAt: donation.createdAt,
+  }));
+}
+
+export async function getDonationStats() {
+  const [paidAgg, paidDonorEmails, pendingCount, cancelledCount] = await Promise.all([
+    prisma.donation.aggregate({
+      where: { status: 'PAID' },
+      _sum: { amountPaise: true },
+      _count: true,
+    }),
+    prisma.donation.findMany({
+      where: { status: 'PAID' },
+      distinct: ['donorEmail'],
+      select: { donorEmail: true },
+    }),
+    prisma.donation.count({ where: { status: 'CREATED' } }),
+    prisma.donation.count({ where: { status: 'CANCELLED' } }),
+  ]);
+
+  return {
+    totalRaisedPaise: paidAgg._sum.amountPaise ?? 0,
+    paidDonationsCount: paidAgg._count,
+    uniqueDonorsCount: paidDonorEmails.length,
+    pendingDonationsCount: pendingCount,
+    cancelledDonationsCount: cancelledCount,
+  };
+}
+
 export async function getReceipt(reference: string) {
   const donation = await prisma.donation.findUnique({ where: { reference } });
   if (!donation) {

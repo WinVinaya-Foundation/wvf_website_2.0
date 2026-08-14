@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './env.js';
 import { authRouter } from './auth/auth.routes.js';
+import { adminDonationsRouter } from './donations/donations.admin.routes.js';
 import { donationsRouter } from './donations/donations.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -18,6 +19,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/admin/donors', adminDonationsRouter);
 app.use('/api/donations', donationsRouter);
 
 app.use(notFoundHandler);

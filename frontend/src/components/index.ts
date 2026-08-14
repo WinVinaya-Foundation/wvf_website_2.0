@@ -18,3 +18,4 @@ export * from './PersonCard';
 export * from './Avatar';
 export * from './PhotoFrame';
 export * from './DocumentCard';
+export * from './StatCard';
