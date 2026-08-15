@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
@@ -12,7 +12,10 @@ import {
   institutionalPartnerVoices,
   voiceFilters,
   type VoiceCategory,
+  type CandidateVoice,
+  type PartnerVoice,
 } from '../../../pages/impact/testimonialsContent';
+import { useGetPublicTestimonialsQuery } from '../../../store/api/testimonialsApi';
 import CandidateVoiceCard from './CandidateVoiceCard';
 import PartnerVoiceCard from './PartnerVoiceCard';
 import { accentForIndex } from './voiceAccents';
@@ -26,16 +29,38 @@ const filterIcons: Record<FilterKey, React.ReactNode> = {
   institutional: <SchoolRoundedIcon sx={{ fontSize: 18 }} />,
 };
 
-const filterCounts: Record<FilterKey, number> = {
-  all: candidateVoices.length + corporatePartnerVoices.length + institutionalPartnerVoices.length,
-  candidate: candidateVoices.length,
-  corporate: corporatePartnerVoices.length,
-  institutional: institutionalPartnerVoices.length,
-};
-
 /** Filterable testimonials section with modern glass segmented filter bar and responsive masonry layouts */
 export default function VoicesSection() {
+  const { data: dbTestimonials = [] } = useGetPublicTestimonialsQuery();
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
+
+  const candidatesList: CandidateVoice[] = useMemo(() => {
+    const dbCandidates = dbTestimonials
+      .filter((t) => t.category === 'CANDIDATE')
+      .map((t) => ({ quote: t.quote.replace(/<[^>]*>/g, ''), name: t.name, role: t.role, disability: t.disability || undefined }));
+    return dbCandidates.length > 0 ? dbCandidates : candidateVoices;
+  }, [dbTestimonials]);
+
+  const corporateList: PartnerVoice[] = useMemo(() => {
+    const dbCorporate = dbTestimonials
+      .filter((t) => t.category === 'CORPORATE')
+      .map((t) => ({ quote: t.quote.replace(/<[^>]*>/g, ''), name: t.name, title: t.role }));
+    return dbCorporate.length > 0 ? dbCorporate : corporatePartnerVoices;
+  }, [dbTestimonials]);
+
+  const institutionalList: PartnerVoice[] = useMemo(() => {
+    const dbInst = dbTestimonials
+      .filter((t) => t.category === 'INSTITUTIONAL')
+      .map((t) => ({ quote: t.quote.replace(/<[^>]*>/g, ''), name: t.name, title: t.role }));
+    return dbInst.length > 0 ? dbInst : institutionalPartnerVoices;
+  }, [dbTestimonials]);
+
+  const filterCounts: Record<FilterKey, number> = {
+    all: candidatesList.length + corporateList.length + institutionalList.length,
+    candidate: candidatesList.length,
+    corporate: corporateList.length,
+    institutional: institutionalList.length,
+  };
 
   const showCandidates = activeFilter === 'all' || activeFilter === 'candidate';
   const showCorporate = activeFilter === 'all' || activeFilter === 'corporate';
@@ -161,8 +186,8 @@ export default function VoicesSection() {
             </Stack>
 
             <Box sx={{ columnCount: { xs: 1, sm: 2, lg: 3 }, columnGap: { xs: 0, sm: '28px' } }}>
-              {candidateVoices.map((voice, index) => (
-                <CandidateVoiceCard key={voice.name} voice={voice} accent={accentForIndex(index)} />
+              {candidatesList.map((voice, index) => (
+                <CandidateVoiceCard key={voice.name + index} voice={voice} accent={accentForIndex(index)} />
               ))}
             </Box>
           </Box>
@@ -190,7 +215,7 @@ export default function VoicesSection() {
             </Stack>
 
             <Stack spacing={3.5}>
-              {corporatePartnerVoices.map((voice, index) => (
+              {corporateList.map((voice, index) => (
                 <PartnerVoiceCard
                   key={voice.name + index}
                   voice={voice}
@@ -224,7 +249,7 @@ export default function VoicesSection() {
             </Stack>
 
             <Stack spacing={3.5}>
-              {institutionalPartnerVoices.map((voice, index) => (
+              {institutionalList.map((voice, index) => (
                 <PartnerVoiceCard key={voice.name + index} voice={voice} icon={<SchoolRoundedIcon />} accent={accentForIndex(index)} />
               ))}
             </Stack>

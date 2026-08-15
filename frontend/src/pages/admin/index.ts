@@ -4,4 +4,6 @@ export { default as AdminLoginPage } from './AdminLoginPage';
 export { default as AdminReportsPage } from './AdminReportsPage';
 export { default as AdminEventsPage } from './AdminEventsPage';
 export { default as AdminGalleryPage } from './AdminGalleryPage';
+export { default as AdminStoriesPage } from './AdminStoriesPage';
+export { default as AdminTestimonialsPage } from './AdminTestimonialsPage';
 export { default as CategoryQuickAddDialog } from './CategoryQuickAddDialog';

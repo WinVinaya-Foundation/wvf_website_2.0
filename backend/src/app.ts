@@ -14,6 +14,10 @@ import { galleryRouter } from './gallery/gallery.routes.js';
 import { adminGalleryRouter } from './gallery/gallery.admin.routes.js';
 import { categoriesRouter } from './categories/categories.routes.js';
 import { adminCategoriesRouter } from './categories/categories.admin.routes.js';
+import { storiesRouter } from './stories/stories.routes.js';
+import { adminStoriesRouter } from './stories/stories.admin.routes.js';
+import { testimonialsRouter } from './testimonials/testimonials.routes.js';
+import { adminTestimonialsRouter } from './testimonials/testimonials.admin.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -36,11 +40,15 @@ app.use('/api/admin/reports', adminReportsRouter);
 app.use('/api/admin/events', adminEventsRouter);
 app.use('/api/admin/gallery', adminGalleryRouter);
 app.use('/api/admin/categories', adminCategoriesRouter);
+app.use('/api/admin/stories', adminStoriesRouter);
+app.use('/api/admin/testimonials', adminTestimonialsRouter);
 app.use('/api/donations', donationsRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/gallery', galleryRouter);
 app.use('/api/categories', categoriesRouter);
+app.use('/api/stories', storiesRouter);
+app.use('/api/testimonials', testimonialsRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

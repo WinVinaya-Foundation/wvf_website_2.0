@@ -3,12 +3,16 @@ import { alpha } from '@mui/material/styles';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import OndemandVideoRoundedIcon from '@mui/icons-material/OndemandVideoRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import type { FeaturedStory } from '../../../pages/impact/successStoriesContent';
 import type { StoryAccent } from './storyAccents';
 import { getYouTubeThumbnail } from './youtube';
 
 export interface StoryCardProps {
-  story: FeaturedStory;
+  story: {
+    name: string;
+    role: string;
+    description: string;
+    videoUrl: string;
+  };
   accent: StoryAccent;
   onOpen: () => void;
 }

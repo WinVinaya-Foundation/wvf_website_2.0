@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { AppDialog, Chip, SectionContainer, SectionHeading } from '../../../components';
-import { featuredStories } from '../../../pages/impact/successStoriesContent';
+import { useGetPublicStoriesQuery } from '../../../store/api/storiesApi';
 import { accentForIndex } from './storyAccents';
 import StoryCard from './StoryCard';
 
-/** Grid-of-cards + play-in-dialog layout: unlike a per-story row, this keeps a fixed card
- * footprint as more stories are added — new entries just add another grid cell. */
+/** Grid-of-cards + play-in-dialog layout: fetches dynamic success stories from backend API */
 export default function FeaturedStoriesSection() {
+  const { data: stories = [], isFetching } = useGetPublicStoriesQuery();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const activeStory = openIndex !== null ? featuredStories[openIndex] : undefined;
+  const activeStory = openIndex !== null ? stories[openIndex] : undefined;
   const activeAccent = openIndex !== null ? accentForIndex(openIndex) : 'primary';
 
   return (
@@ -23,17 +24,28 @@ export default function FeaturedStoriesSection() {
         titleId="featured-stories-heading"
       />
 
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-          gap: { xs: 4, md: 5 },
-        }}
-      >
-        {featuredStories.map((story, index) => (
-          <StoryCard key={story.name} story={story} accent={accentForIndex(index)} onOpen={() => setOpenIndex(index)} />
-        ))}
-      </Box>
+      {isFetching ? (
+        <Stack sx={{ alignItems: 'center', py: 6 }}>
+          <CircularProgress size={28} />
+        </Stack>
+      ) : stories.length === 0 ? (
+        <Stack spacing={1} sx={{ alignItems: 'center', textAlign: 'center', py: 6, color: 'text.secondary' }}>
+          <AutoAwesomeRoundedIcon sx={{ fontSize: 36, opacity: 0.5 }} />
+          <Typography variant="body1">No featured success stories to show yet.</Typography>
+        </Stack>
+      ) : (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+            gap: { xs: 4, md: 5 },
+          }}
+        >
+          {stories.map((story, index) => (
+            <StoryCard key={story.id} story={story} accent={accentForIndex(index)} onOpen={() => setOpenIndex(index)} />
+          ))}
+        </Box>
+      )}
 
       {activeStory && (
         <AppDialog

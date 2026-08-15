@@ -339,7 +339,6 @@ async function main() {
 
     const filePath = path.join(folderPath, rep.fileName);
     if (!fs.existsSync(filePath)) {
-      // Create sample PDF placeholder content if file doesn't exist
       const samplePdfContent = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kinds [] /Count 1 /Kids [3 0 R] >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 50 >>\nstream\nBT /F1 12 Tf 100 700 TD (${rep.title}) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000206 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n306\n%%EOF`;
       fs.writeFileSync(filePath, samplePdfContent);
     }
@@ -366,6 +365,194 @@ async function main() {
         },
       });
       console.log(`Seeded report: [${rep.category}] ${rep.title}`);
+    }
+  }
+
+  // Seed all original success stories & candidate/partner testimonials
+  const initialStories = [
+    {
+      name: 'Symonne Kotian',
+      role: 'Graphic Designer',
+      description:
+        'Symonne Kotian is a creative person with a pleasant smile. She is skilled at graphic designing, proficient in software like Adobe Photoshop, Illustrator, and Canva. She is an amazing artist and a person with Cerebral Palsy. Watch the video to know more about her journey.',
+      videoUrl: 'https://www.youtube.com/embed/2j45mfZ9iFI?autoplay=1',
+      sortOrder: 1,
+    },
+    {
+      name: 'Hemanth',
+      role: 'Aspiring Director',
+      description:
+        "Hemanth is an M.Com graduate and an aspiring director. A cheerful, optimistic go-getter and a person with Cerebral Palsy, he's never let his disability stand in the way of his dreams. He shares his life, his dreams, and his support system — along with a thought-provoking message. Watch his story to know more.",
+      videoUrl: 'https://www.youtube.com/embed/ntu7SKSjfUw?autoplay=1',
+      sortOrder: 2,
+    },
+    {
+      name: 'Anoop',
+      role: 'Sign Language Advocate',
+      description:
+        "Anoop is a Deaf individual from Kerala who communicates using Sign Language. Though India has 400+ educational institutions for the deaf, almost 95% of them lack qualified sign language instructors — a gap Anoop's story speaks directly to. Watch his story to know more.",
+      videoUrl: 'https://www.youtube.com/embed/b-rXnVXsSo4?autoplay=1',
+      sortOrder: 3,
+    },
+    {
+      name: 'Harikumar',
+      role: 'QA-Automation Engineer, Caterpillar-Randstad',
+      description:
+        'They trained me in Java, SQL and Soft Skills. I later got placed in Caterpillar as an Associate Engineer. They are working for a great cause in society.',
+      videoUrl: 'https://www.youtube.com/embed/2j45mfZ9iFI',
+      sortOrder: 4,
+    },
+    {
+      name: 'Priyanka Kumari',
+      role: 'Associate, Mindtree Limited',
+      description:
+        'My English was also not good, but they helped me improve my speaking skills and prepare for interviews. After some effort, I was placed in an internship with Allstate.',
+      videoUrl: 'https://www.youtube.com/embed/ntu7SKSjfUw',
+      sortOrder: 5,
+    },
+    {
+      name: 'Kartik Vurukonda',
+      role: 'Inductee, ICICI Prudential',
+      description:
+        'Today was my induction into ICICI Prudential, and no words would suffice to explain how much I am indebted to all of you. Thank you Shiva Sir and Akila Madam — you are the pillars of this organization.',
+      videoUrl: 'https://www.youtube.com/embed/b-rXnVXsSo4',
+      sortOrder: 6,
+    },
+    {
+      name: 'Corporate Hiring Partner',
+      role: 'Corporate Partner',
+      description:
+        'I want to thank you and your whole team for your tireless effort and patience helping us onboard two talented candidates. The support from interview through onboarding was fantastic and spot on.',
+      videoUrl: 'https://www.youtube.com/embed/2j45mfZ9iFI',
+      sortOrder: 7,
+    },
+    {
+      name: 'Chippersage',
+      role: 'English Training Partner',
+      description:
+        'Chippersage has been associated with WinVinaya helping differently-abled candidates develop fluency in communicative English. Our team members rejoice whenever their mentees receive job offers.',
+      videoUrl: 'https://www.youtube.com/embed/ntu7SKSjfUw',
+      sortOrder: 8,
+    },
+  ];
+
+  for (const story of initialStories) {
+    const existing = await prisma.story.findFirst({
+      where: { name: story.name },
+    });
+
+    if (!existing) {
+      await prisma.story.create({
+        data: {
+          name: story.name,
+          role: story.role,
+          description: story.description,
+          videoUrl: story.videoUrl,
+          sortOrder: story.sortOrder,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded story: ${story.name}`);
+    } else {
+      await prisma.story.update({
+        where: { id: existing.id },
+        data: {
+          role: story.role,
+          description: story.description,
+          videoUrl: story.videoUrl,
+          sortOrder: story.sortOrder,
+        },
+      });
+      console.log(`Updated story: ${story.name}`);
+    }
+  }
+
+  // Seed sample testimonials across Candidate, Corporate, and Institutional categories
+  const initialTestimonials = [
+    {
+      category: 'CANDIDATE' as const,
+      name: 'Harikumar',
+      role: 'QA-Automation Engineer, Caterpillar-Randstad',
+      disability: 'Visual Impairment',
+      quote:
+        'They trained me in Java, SQL and Soft Skills. I later got placed in Caterpillar as an Associate Engineer. They are working for a great cause in society.',
+      sortOrder: 1,
+    },
+    {
+      category: 'CANDIDATE' as const,
+      name: 'Priyanka Kumari',
+      role: 'Associate, Mindtree Limited',
+      disability: 'Cerebral Palsy',
+      quote:
+        'My English was also not good, but they helped me improve my speaking skills and prepare for interviews. After some effort, I was placed in an internship with Allstate.',
+      sortOrder: 2,
+    },
+    {
+      category: 'CANDIDATE' as const,
+      name: 'Kartik Vurukonda',
+      role: 'Inductee, ICICI Prudential',
+      quote:
+        'Today was my induction into ICICI Prudential, and no words would suffice to explain how much I am indebted to all of you. Thank you Shiva Sir and Akila Madam — you are the pillars of this organization.',
+      sortOrder: 3,
+    },
+    {
+      category: 'CORPORATE' as const,
+      name: 'Corporate Hiring Partner',
+      role: 'Talent Acquisition Team',
+      quote:
+        'I want to thank you and your whole team for your tireless effort and patience helping us onboard two talented candidates. The support from interview through onboarding was fantastic and spot on.',
+      sortOrder: 4,
+    },
+    {
+      category: 'CORPORATE' as const,
+      name: 'Corporate Partner',
+      role: 'Engineering Director',
+      quote:
+        "They don't just do social work — they develop some of the best talent and build real careers for differently-abled people. People from Shiva's organization continue working for us and deliver equal to or more than an abled person.",
+      sortOrder: 5,
+    },
+    {
+      category: 'INSTITUTIONAL' as const,
+      name: 'Chippersage',
+      role: 'English Training Partner',
+      title: 'Communicative Fluency Partner',
+      quote:
+        'Chippersage has been associated with WinVinaya helping differently-abled candidates develop fluency in communicative English. Our team members rejoice whenever their mentees receive job offers.',
+      sortOrder: 6,
+    },
+  ];
+
+  for (const item of initialTestimonials) {
+    const existing = await prisma.testimonial.findFirst({
+      where: { name: item.name, category: item.category },
+    });
+
+    if (!existing) {
+      await prisma.testimonial.create({
+        data: {
+          category: item.category,
+          name: item.name,
+          role: item.role,
+          quote: item.quote,
+          disability: item.disability || null,
+          title: item.title || null,
+          sortOrder: item.sortOrder,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded testimonial: [${item.category}] ${item.name}`);
+    } else {
+      await prisma.testimonial.update({
+        where: { id: existing.id },
+        data: {
+          role: item.role,
+          quote: item.quote,
+          disability: item.disability || null,
+          title: item.title || null,
+          sortOrder: item.sortOrder,
+        },
+      });
+      console.log(`Updated testimonial: [${item.category}] ${item.name}`);
     }
   }
 }
