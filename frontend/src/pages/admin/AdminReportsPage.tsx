@@ -11,7 +11,6 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
-  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -361,7 +360,7 @@ export default function AdminReportsPage() {
           getRowKey={(row) => row.id}
           getSearchValue={(row) => `${row.title} ${row.description ?? ''} ${row.year ?? ''} ${row.fileName}`}
           searchPlaceholder="Search reports by title, description or year..."
-          onRefresh={() => refetch()}
+          onRefresh={() => { refetch(); }}
           loading={isFetching}
           emptyMessage="No reports found in this category"
           stickyHeader

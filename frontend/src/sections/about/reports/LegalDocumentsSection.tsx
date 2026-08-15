@@ -53,9 +53,13 @@ export default function LegalDocumentsSection() {
           ? apiReports.map((r) => ({
               title: r.title,
               description: r.description || undefined,
-              fileUrl: r.fileUrl,
+              fileUrl: r.fileUrl as string | undefined,
             }))
-          : legalDocuments.documents
+          : legalDocuments.documents.map((d) => ({
+              title: d.title,
+              description: d.description,
+              fileUrl: undefined as string | undefined,
+            }))
         ).map((doc) => (
           <DocumentCard key={doc.title} title={doc.title} description={doc.description} fileUrl={doc.fileUrl} icon={<VerifiedRounded />} />
         ))}

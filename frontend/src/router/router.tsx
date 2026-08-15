@@ -5,6 +5,8 @@ import { legalLinks } from '../layout/Footer/footerLinks';
 import {
   AdminDashboardPage,
   AdminDonorsPage,
+  AdminEventsPage,
+  AdminGalleryPage,
   AdminLoginPage,
   AdminReportsPage,
   BlogPage,
@@ -162,6 +164,28 @@ const adminReportsRoute = createRoute({
   component: AdminReportsPage,
 });
 
+const adminEventsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/events',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminEventsPage,
+});
+
+const adminGalleryRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/gallery',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminGalleryPage,
+});
+
 // Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -222,6 +246,8 @@ const routeTree = rootRoute.addChildren([
   adminDashboardRoute,
   adminDonorsRoute,
   adminReportsRoute,
+  adminEventsRoute,
+  adminGalleryRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);

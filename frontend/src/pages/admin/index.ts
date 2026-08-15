@@ -2,3 +2,6 @@ export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as AdminDonorsPage } from './AdminDonorsPage';
 export { default as AdminLoginPage } from './AdminLoginPage';
 export { default as AdminReportsPage } from './AdminReportsPage';
+export { default as AdminEventsPage } from './AdminEventsPage';
+export { default as AdminGalleryPage } from './AdminGalleryPage';
+export { default as CategoryQuickAddDialog } from './CategoryQuickAddDialog';

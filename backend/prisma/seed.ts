@@ -27,7 +27,23 @@ const owners = [
   },
 ];
 
+const defaultCategories = [
+  { label: 'WinVinaya Academy', color: 'PRIMARY' as const },
+  { label: 'Samarth', color: 'SECONDARY' as const },
+  { label: 'Community & Outreach', color: 'INFO' as const },
+  { label: 'Corporate & Awards', color: 'WARNING' as const },
+];
+
 async function main() {
+  for (const category of defaultCategories) {
+    await prisma.category.upsert({
+      where: { label: category.label },
+      update: {},
+      create: { label: category.label, color: category.color },
+    });
+    console.log(`Seeded category: ${category.label}`);
+  }
+
   for (const owner of owners) {
     const passwordHash = await bcrypt.hash(owner.password, 12);
     await prisma.user.upsert({

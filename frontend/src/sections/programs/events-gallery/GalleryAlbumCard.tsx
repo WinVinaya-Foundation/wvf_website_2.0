@@ -3,22 +3,18 @@ import { alpha } from '@mui/material/styles';
 import PhotoLibraryRoundedIcon from '@mui/icons-material/PhotoLibraryRounded';
 import ZoomInRoundedIcon from '@mui/icons-material/ZoomInRounded';
 import { PhotoFrame } from '../../../components';
-import type { GalleryEventAlbum } from '../../../pages/programs/eventsGalleryContent';
-import { galleryImageUrl } from '../../../utils/gallery';
-import { CATEGORY_ICONS, CATEGORY_META } from './categoryVisuals';
+import type { GalleryAlbumItem } from '../../../store/api/galleryApi';
+import { resolveUploadUrl } from '../../../utils/uploads';
+import { getCategoryMeta } from './categoryVisuals';
 
 export interface GalleryAlbumCardProps {
-  album: GalleryEventAlbum;
+  album: GalleryAlbumItem;
   onOpen: () => void;
 }
 
-/** An event's photos shown as a fanned stack — two tinted "photos" peek out from behind the
- * cover shot and spread further apart on hover, hinting there's more than one photo before the
- * visitor even clicks. The photo-count pill makes that explicit for anyone who can't see the
- * hover motion (touch, reduced-motion, low vision). */
 export default function GalleryAlbumCard({ album, onOpen }: GalleryAlbumCardProps) {
-  const meta = CATEGORY_META[album.category];
-  const Icon = CATEGORY_ICONS[album.category];
+  const meta = getCategoryMeta(album.category);
+  const Icon = meta.Icon;
   const cover = album.photos[0];
   const photoCount = album.photos.length;
 
@@ -81,8 +77,8 @@ export default function GalleryAlbumCard({ album, onOpen }: GalleryAlbumCardProp
           }}
         >
           <PhotoFrame
-            src={galleryImageUrl(cover.caption)}
-            alt={cover.alt}
+            src={cover ? resolveUploadUrl(cover.imageUrl) : ''}
+            alt={cover?.altText || cover?.caption || album.title}
             fallbackIcon={<Icon sx={{ fontSize: 34 }} />}
             fallbackBgcolor={`${meta.color}.light`}
             fallbackColor={`${meta.color}.dark`}

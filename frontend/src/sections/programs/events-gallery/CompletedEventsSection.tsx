@@ -1,26 +1,24 @@
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { Link } from '@tanstack/react-router';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import EventBusyRoundedIcon from '@mui/icons-material/EventBusyRounded';
+import HistoryToggleOffRoundedIcon from '@mui/icons-material/HistoryToggleOffRounded';
 import { Button, Card, CardContent, Chip, SectionContainer, SectionHeading } from '../../../components';
-import { upcomingEventsContent } from '../../../pages/programs/eventsGalleryContent';
+import { completedEventsContent } from '../../../pages/programs/eventsGalleryContent';
 import { useGetPublicEventsQuery } from '../../../store/api/eventsApi';
 import { getCategoryMeta } from './categoryVisuals';
 
-export default function UpcomingEventsSection() {
-  const { data: events = [], isFetching } = useGetPublicEventsQuery({ status: 'UPCOMING' });
+export default function CompletedEventsSection() {
+  const { data: events = [], isFetching } = useGetPublicEventsQuery({ status: 'COMPLETED' });
 
   return (
-    <SectionContainer id="upcoming-events" bgcolor="background.default" labelledBy="upcoming-events-heading">
+    <SectionContainer id="completed-events" bgcolor="background.paper" labelledBy="completed-events-heading">
       <SectionHeading
-        eyebrow={upcomingEventsContent.eyebrow}
-        title={upcomingEventsContent.title}
-        description={upcomingEventsContent.description}
-        titleId="upcoming-events-heading"
+        eyebrow={completedEventsContent.eyebrow}
+        title={completedEventsContent.title}
+        description={completedEventsContent.description}
+        titleId="completed-events-heading"
       />
 
       {isFetching ? (
@@ -29,8 +27,8 @@ export default function UpcomingEventsSection() {
         </Stack>
       ) : events.length === 0 ? (
         <Stack spacing={1} sx={{ alignItems: 'center', textAlign: 'center', py: 6, color: 'text.secondary' }}>
-          <EventBusyRoundedIcon sx={{ fontSize: 36, opacity: 0.5 }} />
-          <Typography variant="body1">No upcoming events right now — check back soon.</Typography>
+          <HistoryToggleOffRoundedIcon sx={{ fontSize: 36, opacity: 0.5 }} />
+          <Typography variant="body1">No completed events to show yet.</Typography>
         </Stack>
       ) : (
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3 }}>
@@ -86,12 +84,6 @@ export default function UpcomingEventsSection() {
                     </Stack>
                   </Stack>
 
-                  {event.isDateTBA && (
-                    <Typography variant="caption" sx={{ display: 'block', mb: 1.5, color: 'text.secondary', fontStyle: 'italic' }}>
-                      Exact date shared closer to the event — reach out to be notified.
-                    </Typography>
-                  )}
-
                   <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1 }}>
                     {event.description}
                   </Typography>
@@ -114,57 +106,6 @@ export default function UpcomingEventsSection() {
           })}
         </Box>
       )}
-
-      <Box
-        sx={{
-          mt: 4,
-          p: { xs: 3, sm: 3.5 },
-          borderRadius: 4,
-          border: '1px dashed',
-          borderColor: 'divider',
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          justifyContent: 'space-between',
-          gap: 2.5,
-        }}
-      >
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-          <Box
-            aria-hidden="true"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 48,
-              height: 48,
-              flexShrink: 0,
-              borderRadius: '50%',
-              bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
-              color: 'text.secondary',
-            }}
-          >
-            <AddCircleRoundedIcon />
-          </Box>
-          <Box>
-            <Typography variant="subtitle1" component="p" sx={{ fontWeight: 700 }}>
-              {upcomingEventsContent.suggestEvent.headline}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {upcomingEventsContent.suggestEvent.body}
-            </Typography>
-          </Box>
-        </Stack>
-        <Button
-          component={Link}
-          to={upcomingEventsContent.suggestEvent.cta.to}
-          variant="text"
-          color="primary"
-          sx={{ fontWeight: 700, flexShrink: 0 }}
-        >
-          {upcomingEventsContent.suggestEvent.cta.label} →
-        </Button>
-      </Box>
     </SectionContainer>
   );
 }

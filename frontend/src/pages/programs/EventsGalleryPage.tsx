@@ -1,6 +1,7 @@
 import {
   EventsGalleryHeroSection,
   UpcomingEventsSection,
+  CompletedEventsSection,
   GallerySection,
   EventsGalleryClosingCtaSection,
 } from '../../sections/programs/events-gallery';
@@ -10,6 +11,7 @@ export default function EventsGalleryPage() {
     <>
       <EventsGalleryHeroSection />
       <UpcomingEventsSection />
+      <CompletedEventsSection />
       <GallerySection />
       <EventsGalleryClosingCtaSection />
     </>

@@ -1,30 +1,39 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import PhotoLibraryRoundedIcon from '@mui/icons-material/PhotoLibraryRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { AppDialog, Chip, PhotoFrame, SectionContainer, SectionHeading } from '../../../components';
-import { eventCategories, galleryContent, type EventCategoryKey } from '../../../pages/programs/eventsGalleryContent';
-import { galleryImageUrl } from '../../../utils/gallery';
-import { CATEGORY_ICONS, CATEGORY_META } from './categoryVisuals';
+import { galleryContent } from '../../../pages/programs/eventsGalleryContent';
+import { useGetPublicAlbumsQuery } from '../../../store/api/galleryApi';
+import { useGetCategoriesQuery } from '../../../store/api/categoriesApi';
+import { resolveUploadUrl } from '../../../utils/uploads';
+import { getCategoryColor, getCategoryMeta } from './categoryVisuals';
 import GalleryAlbumCard from './GalleryAlbumCard';
 
-type FilterKey = EventCategoryKey | 'all';
+type FilterKey = string | 'all';
 
 export default function GallerySection() {
+  const { data: albums = [], isFetching: isFetchingAlbums } = useGetPublicAlbumsQuery();
+  const { data: categories = [], isFetching: isFetchingCategories } = useGetCategoriesQuery();
+
   const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
   const [openAlbumId, setOpenAlbumId] = useState<string | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
 
   const filteredAlbums = useMemo(
-    () => (activeFilter === 'all' ? galleryContent.albums : galleryContent.albums.filter((album) => album.category === activeFilter)),
-    [activeFilter],
+    () =>
+      activeFilter === 'all'
+        ? albums
+        : albums.filter((album) => album.category?.id === activeFilter),
+    [albums, activeFilter],
   );
 
-  const activeAlbum = openAlbumId ? galleryContent.albums.find((album) => album.id === openAlbumId) : undefined;
+  const activeAlbum = openAlbumId ? albums.find((album) => album.id === openAlbumId) : undefined;
   const activePhoto = activeAlbum?.photos[photoIndex];
   const photoCount = activeAlbum?.photos.length ?? 0;
+  const activeMeta = activeAlbum ? getCategoryMeta(activeAlbum.category) : null;
 
   const openAlbum = (albumId: string) => {
     setOpenAlbumId(albumId);
@@ -46,6 +55,8 @@ export default function GallerySection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAlbum, photoCount]);
 
+  const isLoading = isFetchingAlbums || isFetchingCategories;
+
   return (
     <SectionContainer id="gallery" bgcolor="background.paper" labelledBy="gallery-heading">
       <SectionHeading
@@ -64,20 +75,24 @@ export default function GallerySection() {
           aria-pressed={activeFilter === 'all'}
           sx={{ fontWeight: 700 }}
         />
-        {eventCategories.map((meta) => (
+        {categories.map((cat) => (
           <Chip
-            key={meta.key}
-            label={meta.label}
-            onClick={() => setActiveFilter(meta.key)}
-            color={meta.color}
-            variant={activeFilter === meta.key ? 'filled' : 'outlined'}
-            aria-pressed={activeFilter === meta.key}
+            key={cat.id}
+            label={cat.label}
+            onClick={() => setActiveFilter(cat.id)}
+            color={getCategoryColor(cat.color)}
+            variant={activeFilter === cat.id ? 'filled' : 'outlined'}
+            aria-pressed={activeFilter === cat.id}
             sx={{ fontWeight: 700 }}
           />
         ))}
       </Stack>
 
-      {filteredAlbums.length === 0 ? (
+      {isLoading ? (
+        <Stack sx={{ alignItems: 'center', py: 6 }}>
+          <CircularProgress size={28} />
+        </Stack>
+      ) : filteredAlbums.length === 0 ? (
         <Stack spacing={1} sx={{ alignItems: 'center', textAlign: 'center', py: 6, color: 'text.secondary' }}>
           <PhotoLibraryRoundedIcon sx={{ fontSize: 36, opacity: 0.5 }} />
           <Typography variant="body1">No albums in this category yet.</Typography>
@@ -90,14 +105,18 @@ export default function GallerySection() {
         </Box>
       )}
 
-      {activeAlbum && activePhoto && (
+      {activeAlbum && activePhoto && activeMeta && (
         <AppDialog
           open={Boolean(openAlbumId)}
           onClose={() => setOpenAlbumId(null)}
           title={
             <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
               <span>{activeAlbum.title}</span>
-              <Chip label={CATEGORY_META[activeAlbum.category].label} size="small" color={CATEGORY_META[activeAlbum.category].color} />
+              <Chip
+                label={activeMeta.label}
+                size="small"
+                color={activeMeta.color}
+              />
             </Stack>
           }
           maxWidth="md"
@@ -105,14 +124,11 @@ export default function GallerySection() {
         >
           <Box sx={{ position: 'relative' }}>
             <PhotoFrame
-              src={galleryImageUrl(activePhoto.caption)}
-              alt={activePhoto.alt}
-              fallbackIcon={(() => {
-                const Icon = CATEGORY_ICONS[activeAlbum.category];
-                return <Icon sx={{ fontSize: 48 }} />;
-              })()}
-              fallbackBgcolor={`${CATEGORY_META[activeAlbum.category].color}.light`}
-              fallbackColor={`${CATEGORY_META[activeAlbum.category].color}.dark`}
+              src={resolveUploadUrl(activePhoto.imageUrl)}
+              alt={activePhoto.altText || activePhoto.caption || activeAlbum.title}
+              fallbackIcon={<activeMeta.Icon sx={{ fontSize: 48 }} />}
+              fallbackBgcolor={`${activeMeta.color}.light`}
+              fallbackColor={`${activeMeta.color}.dark`}
               aspectRatio="16 / 10"
             />
 
@@ -153,9 +169,11 @@ export default function GallerySection() {
           </Box>
 
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 2, mb: photoCount > 1 ? 1.5 : 0 }}>
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {activePhoto.caption}
-            </Typography>
+            {activePhoto.caption && (
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {activePhoto.caption}
+              </Typography>
+            )}
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               · {photoIndex + 1} of {photoCount}
             </Typography>
@@ -165,11 +183,11 @@ export default function GallerySection() {
             <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', pb: 0.5 }}>
               {activeAlbum.photos.map((photo, index) => (
                 <Box
-                  key={photo.caption}
+                  key={photo.id}
                   component="button"
                   type="button"
                   onClick={() => setPhotoIndex(index)}
-                  aria-label={`View photo ${index + 1}: ${photo.caption}`}
+                  aria-label={`View photo ${index + 1}${photo.caption ? `: ${photo.caption}` : ''}`}
                   aria-current={index === photoIndex}
                   sx={{
                     p: 0,
@@ -180,7 +198,7 @@ export default function GallerySection() {
                     overflow: 'hidden',
                     cursor: 'pointer',
                     border: '2px solid',
-                    borderColor: index === photoIndex ? `${CATEGORY_META[activeAlbum.category].color}.main` : 'transparent',
+                    borderColor: index === photoIndex ? `${activeMeta.color}.main` : 'transparent',
                     opacity: index === photoIndex ? 1 : 0.6,
                     transition: 'opacity 0.2s ease, border-color 0.2s ease',
                     '&:hover': { opacity: 1 },
@@ -191,14 +209,11 @@ export default function GallerySection() {
                   }}
                 >
                   <PhotoFrame
-                    src={galleryImageUrl(photo.caption)}
+                    src={resolveUploadUrl(photo.imageUrl)}
                     alt=""
-                    fallbackIcon={(() => {
-                      const Icon = CATEGORY_ICONS[activeAlbum.category];
-                      return <Icon sx={{ fontSize: 16 }} />;
-                    })()}
-                    fallbackBgcolor={`${CATEGORY_META[activeAlbum.category].color}.light`}
-                    fallbackColor={`${CATEGORY_META[activeAlbum.category].color}.dark`}
+                    fallbackIcon={<activeMeta.Icon sx={{ fontSize: 16 }} />}
+                    fallbackBgcolor={`${activeMeta.color}.light`}
+                    fallbackColor={`${activeMeta.color}.dark`}
                     aspectRatio="4 / 3"
                     sx={{ borderRadius: 0, width: '100%', height: '100%' }}
                   />

@@ -100,3 +100,83 @@ model Report {
   @@index([isActive])
   @@index([createdAt])
 }
+
+enum EventStatus {
+  UPCOMING
+  COMPLETED
+}
+
+enum CategoryColor {
+  PRIMARY
+  SECONDARY
+  INFO
+  WARNING
+  SUCCESS
+  ERROR
+}
+
+model Category {
+  id        String        @id @default(cuid())
+  label     String        @unique
+  color     CategoryColor @default(PRIMARY)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events        Event[]
+  galleryAlbums GalleryAlbum[]
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  status      EventStatus
+  dateLabel   String
+  isDateTBA   Boolean     @default(false)
+  location    String
+  description String
+  ctaLabel    String?
+  ctaLink     String?
+  isActive    Boolean     @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model GalleryAlbum {
+  id         String   @id @default(cuid())
+  title      String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  dateLabel  String
+  isActive   Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  photos GalleryPhoto[]
+
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model GalleryPhoto {
+  id      String @id @default(cuid())
+  albumId String
+  album   GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  imageUrl  String
+  caption   String?
+  altText   String?
+  sortOrder Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([albumId])
+}

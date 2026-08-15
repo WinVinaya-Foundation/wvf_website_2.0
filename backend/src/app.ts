@@ -8,6 +8,12 @@ import { adminDonationsRouter } from './donations/donations.admin.routes.js';
 import { donationsRouter } from './donations/donations.routes.js';
 import { reportsRouter } from './reports/reports.routes.js';
 import { adminReportsRouter } from './reports/reports.admin.routes.js';
+import { eventsRouter } from './events/events.routes.js';
+import { adminEventsRouter } from './events/events.admin.routes.js';
+import { galleryRouter } from './gallery/gallery.routes.js';
+import { adminGalleryRouter } from './gallery/gallery.admin.routes.js';
+import { categoriesRouter } from './categories/categories.routes.js';
+import { adminCategoriesRouter } from './categories/categories.admin.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -27,8 +33,14 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/admin/donors', adminDonationsRouter);
 app.use('/api/admin/reports', adminReportsRouter);
+app.use('/api/admin/events', adminEventsRouter);
+app.use('/api/admin/gallery', adminGalleryRouter);
+app.use('/api/admin/categories', adminCategoriesRouter);
 app.use('/api/donations', donationsRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/api/events', eventsRouter);
+app.use('/api/gallery', galleryRouter);
+app.use('/api/categories', categoriesRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
