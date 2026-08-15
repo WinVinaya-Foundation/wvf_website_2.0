@@ -954,6 +954,183 @@ async function main() {
       console.log(`Updated ebook: ${eb.title}`);
     }
   }
+
+  // Seed sample job openings and create sample PDF files
+  const baseCareersUploadsDir = path.join(process.cwd(), 'uploads', 'careers');
+  if (!fs.existsSync(baseCareersUploadsDir)) {
+    fs.mkdirSync(baseCareersUploadsDir, { recursive: true });
+  }
+
+  const initialJobOpenings = [
+    {
+      title: 'Accessibility Engineer',
+      employmentType: 'FULL_TIME' as const,
+      experience: '2–4 years',
+      location: 'Bengaluru, India (Hybrid)',
+      department: 'Engineering',
+      description: 'Lead technical accessibility audits, screen-reader testing, and keyboard-navigation remediation across web and mobile platforms.',
+      requirements: 'Proficiency with NVDA, JAWS, VoiceOver, WCAG 2.2 standards, HTML5 semantic markup, ARIA attributes, and React/TypeScript.',
+      fileName: 'Accessibility_Engineer_Job_Description.pdf',
+      isActive: true,
+    },
+    {
+      title: 'Corporate Engagement Associate',
+      employmentType: 'FULL_TIME' as const,
+      experience: '1–3 years',
+      location: 'Bengaluru, India',
+      department: 'Corporate Partnerships',
+      description: 'Build relationships with IT, BFSI, and retail corporate partners to drive inclusive hiring programs and sensitization workshops.',
+      requirements: 'Strong communication skills, experience in B2B outreach or CSR partnerships, and passion for disability inclusion.',
+      fileName: 'Corporate_Engagement_Associate_Job_Description.pdf',
+      isActive: true,
+    },
+    {
+      title: 'Indian Sign Language Trainer',
+      employmentType: 'PART_TIME' as const,
+      experience: '3+ years',
+      location: 'Bengaluru, India',
+      department: 'Sign Language & Accessibility',
+      description: 'Conduct beginner to advanced ISL training sessions for corporate volunteers, candidate cohorts, and workplace allies.',
+      requirements: 'Certified ISL instructor or fluent native signer with prior experience facilitating workshops.',
+      fileName: 'ISL_Trainer_Job_Description.pdf',
+      isActive: true,
+    },
+    {
+      title: 'Training & Curriculum Consultant',
+      employmentType: 'CONTRACT' as const,
+      experience: '5+ years',
+      location: 'Remote',
+      department: 'Academia & Training',
+      description: 'Design accessible, industry-aligned software engineering and BFSI curriculum tailored for scholars with diverse disabilities.',
+      requirements: 'Experience in instructional design, accessibility standards, and technical curriculum development.',
+      fileName: 'Training_Curriculum_Consultant_Job_Description.pdf',
+      isActive: true,
+    },
+    {
+      title: 'Communications & Outreach Associate',
+      employmentType: 'FULL_TIME' as const,
+      experience: '0–2 years',
+      location: 'Bengaluru, India',
+      department: 'Marketing & Outreach',
+      description: 'Draft impact stories, manage newsletter campaigns, and coordinate social media content for WinVinaya Foundation.',
+      requirements: 'Strong writing skills, social media management experience, and basic design skills in Canva/Adobe Photoshop.',
+      fileName: 'Communications_Outreach_Associate_Job_Description.pdf',
+      isActive: false,
+    },
+    {
+      title: 'Talent & Placements Coordinator',
+      employmentType: 'FULL_TIME' as const,
+      experience: '2–5 years',
+      location: 'Bengaluru, India',
+      department: 'Placements',
+      description: 'Coordinate scholar interviews, manage candidate matching, and provide post-placement onboarding support.',
+      requirements: 'Background in recruitment, talent acquisition, or NGO placement drives.',
+      fileName: 'Talent_Placements_Coordinator_Job_Description.pdf',
+      isActive: false,
+    },
+  ];
+
+  for (const job of initialJobOpenings) {
+    const filePath = path.join(baseCareersUploadsDir, job.fileName);
+    if (!fs.existsSync(filePath)) {
+      const samplePdfContent = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kinds [] /Count 1 /Kids [3 0 R] >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 50 >>\nstream\nBT /F1 12 Tf 100 700 TD (${job.title} - Job Description) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000206 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n306\n%%EOF`;
+      fs.writeFileSync(filePath, samplePdfContent);
+    }
+
+    const fileUrl = `/uploads/careers/${job.fileName}`;
+    const fileSize = fs.statSync(filePath).size;
+
+    const existing = await prisma.jobOpening.findFirst({
+      where: { title: job.title },
+    });
+
+    if (!existing) {
+      await prisma.jobOpening.create({
+        data: {
+          title: job.title,
+          department: job.department,
+          employmentType: job.employmentType,
+          location: job.location,
+          experience: job.experience,
+          description: job.description,
+          requirements: job.requirements,
+          fileUrl,
+          fileName: job.fileName,
+          fileSize,
+          isActive: job.isActive,
+        },
+      });
+      console.log(`Seeded job opening: ${job.title}`);
+    } else {
+      await prisma.jobOpening.update({
+        where: { id: existing.id },
+        data: {
+          department: job.department,
+          employmentType: job.employmentType,
+          location: job.location,
+          experience: job.experience,
+          description: job.description,
+          requirements: job.requirements,
+          fileUrl,
+          fileName: job.fileName,
+          fileSize,
+          isActive: job.isActive,
+        },
+      });
+      console.log(`Updated job opening: ${job.title}`);
+    }
+  }
+
+  // Seed sample contact inquiries
+  const initialContactInquiries = [
+    {
+      name: 'Anand Varma',
+      email: 'anand.varma@techcorp.com',
+      phone: '+91 98765 43210',
+      reason: 'Partnering on Inclusive Hiring (Corporate / HR)',
+      message: 'We are looking to hire 10+ Persons with Disabilities in software engineering roles in Bengaluru. Please get in touch to discuss sourcing candidates.',
+      status: 'NEW' as const,
+    },
+    {
+      name: 'Meera Deshmukh',
+      email: 'meera.d@inclusive-learning.org',
+      phone: '+91 91234 56789',
+      reason: 'Enrolling as a Candidate / Scholar',
+      message: 'I am a Deaf M.Com graduate interested in joining the upcoming WinVinaya Academy IT & BFSI training cohort. How do I apply?',
+      status: 'IN_PROGRESS' as const,
+      adminNotes: 'Contacted candidate via email; sent application link.',
+    },
+    {
+      name: 'Rohan Sharma',
+      email: 'rohan.sharma@gmail.com',
+      phone: '+91 99887 76655',
+      reason: 'Volunteering or Internships',
+      message: 'I am a software engineer with 5 years experience and would like to volunteer on weekends to teach Core Java or mentor scholars with disabilities.',
+      status: 'RESOLVED' as const,
+      adminNotes: 'Onboarded as weekend volunteer mentor.',
+    },
+  ];
+
+  for (const inq of initialContactInquiries) {
+    const existing = await prisma.contactInquiry.findFirst({
+      where: { email: inq.email, message: inq.message },
+    });
+
+    if (!existing) {
+      await prisma.contactInquiry.create({
+        data: {
+          name: inq.name,
+          email: inq.email,
+          phone: inq.phone,
+          reason: inq.reason,
+          message: inq.message,
+          status: inq.status,
+          adminNotes: inq.adminNotes || null,
+        },
+      });
+      console.log(`Seeded contact inquiry: from ${inq.name}`);
+    }
+  }
 }
 
 main()

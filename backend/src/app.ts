@@ -24,6 +24,10 @@ import { publicNewsletterRouter } from './newsletter/newsletter.routes.js';
 import { adminNewsletterRouter } from './newsletter/newsletter.admin.routes.js';
 import { publicEbookRouter } from './ebook/ebook.routes.js';
 import { adminEbookRouter } from './ebook/ebook.admin.routes.js';
+import { publicCareersRouter } from './careers/careers.routes.js';
+import { adminCareersRouter } from './careers/careers.admin.routes.js';
+import { publicContactRouter } from './contact/contact.routes.js';
+import { adminContactRouter } from './contact/contact.admin.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -51,6 +55,8 @@ app.use('/api/admin/testimonials', adminTestimonialsRouter);
 app.use('/api/admin/blog', adminBlogRouter);
 app.use('/api/admin/newsletter', adminNewsletterRouter);
 app.use('/api/admin/ebook', adminEbookRouter);
+app.use('/api/admin/careers', adminCareersRouter);
+app.use('/api/admin/contact', adminContactRouter);
 app.use('/api/donations', donationsRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/events', eventsRouter);
@@ -61,6 +67,8 @@ app.use('/api/testimonials', testimonialsRouter);
 app.use('/api/blog', publicBlogRouter);
 app.use('/api/newsletter', publicNewsletterRouter);
 app.use('/api/ebook', publicEbookRouter);
+app.use('/api/careers', publicCareersRouter);
+app.use('/api/contact', publicContactRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

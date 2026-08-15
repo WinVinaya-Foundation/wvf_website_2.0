@@ -284,3 +284,55 @@ model Ebook {
   @@index([publishedAt])
 }
 
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+model JobOpening {
+  id             String         @id @default(cuid())
+  title          String
+  department     String?
+  employmentType EmploymentType @default(FULL_TIME)
+  location       String
+  experience     String
+  description    String
+  requirements   String?
+  fileUrl        String?
+  fileName       String?
+  fileSize       Int?
+  isActive       Boolean        @default(true)
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+model ContactInquiry {
+  id         String        @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  reason     String
+  message    String
+  status     InquiryStatus @default(NEW)
+  adminNotes String?
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+

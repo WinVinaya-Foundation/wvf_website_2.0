@@ -28,6 +28,8 @@ import FormatQuoteRoundedIcon from '@mui/icons-material/FormatQuoteRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
+import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
+import MarkEmailUnreadRoundedIcon from '@mui/icons-material/MarkEmailUnreadRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
@@ -55,6 +57,8 @@ const navItems: AdminNavItem[] = [
   { label: 'Blog Posts', to: '/admin/blog', icon: <ArticleRoundedIcon /> },
   { label: 'Newsletters', to: '/admin/newsletters', icon: <NewspaperRoundedIcon /> },
   { label: 'eBook Library', to: '/admin/ebooks', icon: <MenuBookRoundedIcon /> },
+  { label: 'Job Careers', to: '/admin/careers', icon: <WorkRoundedIcon /> },
+  { label: 'Contact Inquiries', to: '/admin/contact', icon: <MarkEmailUnreadRoundedIcon /> },
 ];
 
 interface AdminLayoutProps {

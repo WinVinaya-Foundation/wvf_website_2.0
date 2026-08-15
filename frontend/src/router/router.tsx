@@ -14,6 +14,8 @@ import {
   AdminBlogPage,
   AdminNewslettersPage,
   AdminEbooksPage,
+  AdminCareersPage,
+  AdminContactPage,
   BlogPage,
   BlogPostPage,
   CareersPage,
@@ -246,6 +248,28 @@ const adminEbooksRoute = createRoute({
   component: AdminEbooksPage,
 });
 
+const adminCareersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/careers',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminCareersPage,
+});
+
+const adminContactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/contact',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminContactPage,
+});
+
 // Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -309,6 +333,8 @@ const routeTree = rootRoute.addChildren([
   adminBlogRoute,
   adminNewslettersRoute,
   adminEbooksRoute,
+  adminCareersRoute,
+  adminContactRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);
