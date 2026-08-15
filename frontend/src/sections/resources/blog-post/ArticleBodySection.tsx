@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import FormatQuoteRoundedIcon from '@mui/icons-material/FormatQuoteRounded';
 import { SectionContainer } from '../../../components';
-import type { BlogContentBlock } from '../../../pages/resources/blogContent';
+import type { BlogContentBlock } from '../../../store/api/blogApi';
 
 export interface ArticleBodySectionProps {
   body: BlogContentBlock[];
@@ -58,7 +58,7 @@ export default function ArticleBodySection({ body }: ArticleBodySectionProps) {
             );
           }
 
-          if (block.type === 'bulletList') {
+          if (block.type === 'bulletList' && Array.isArray(block.items)) {
             return (
               <Box key={key} component="ul" sx={{ m: 0, my: 3, pl: 0, listStyle: 'none' }}>
                 {block.items.map((item) => (
@@ -84,7 +84,7 @@ export default function ArticleBodySection({ body }: ArticleBodySectionProps) {
             );
           }
 
-          if (block.type === 'orderedList') {
+          if (block.type === 'orderedList' && Array.isArray(block.items)) {
             return (
               <Box key={key} component="ol" sx={{ m: 0, my: 3, pl: 0, listStyle: 'none', counterReset: 'blog-ordered-list' }}>
                 {block.items.map((item) => (

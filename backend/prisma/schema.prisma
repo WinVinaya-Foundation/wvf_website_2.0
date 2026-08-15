@@ -235,6 +235,7 @@ model BlogPost {
   publishedAt   DateTime @default(now())
   body          Json
   coverImageUrl String?
+  bannerImageUrl String?
   isActive      Boolean  @default(true)
 
   createdAt     DateTime @default(now())
@@ -244,3 +245,23 @@ model BlogPost {
   @@index([isActive])
   @@index([publishedAt])
 }
+
+model Newsletter {
+  id            String   @id @default(cuid())
+  title         String
+  issueLabel    String
+  publishedAt   DateTime @default(now())
+  description   String
+  fileUrl       String?
+  fileName      String?
+  fileSize      Int?
+  coverImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([publishedAt])
+}
+

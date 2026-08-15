@@ -4,9 +4,16 @@ import { HttpError } from '../lib/httpError.js';
 import { categoriesService } from '../categories/categories.service.js';
 import { blogService } from './blog.service.js';
 
+import { blogUpload } from './blog.storage.js';
+
 export const adminBlogRouter = Router();
 
 adminBlogRouter.use(authenticate);
+
+const blogImageFields = blogUpload.fields([
+  { name: 'coverImage', maxCount: 1 },
+  { name: 'bannerImage', maxCount: 1 },
+]);
 
 // GET /api/admin/blog - Get all blog posts
 adminBlogRouter.get('/', async (_req, res, next) => {
@@ -30,9 +37,9 @@ adminBlogRouter.get('/:id', async (req, res, next) => {
 });
 
 // POST /api/admin/blog - Create a new blog post
-adminBlogRouter.post('/', async (req, res, next) => {
+adminBlogRouter.post('/', blogImageFields, async (req, res, next) => {
   try {
-    const { title, slug, excerpt, categoryId, authorName, authorRole, publishedAt, body, coverImageUrl, isActive } = req.body;
+    const { title, slug, excerpt, categoryId, authorName, authorRole, publishedAt, body, coverImageUrl, bannerImageUrl, isActive } = req.body || {};
 
     if (!title || typeof title !== 'string' || !title.trim()) {
       throw new HttpError(400, 'Title is required');
@@ -52,6 +59,22 @@ adminBlogRouter.post('/', async (req, res, next) => {
       throw new HttpError(400, 'Author role is required');
     }
 
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    const coverFile = files?.['coverImage']?.[0];
+    const bannerFile = files?.['bannerImage']?.[0];
+
+    const finalCoverUrl = coverFile ? `/uploads/blog/${coverFile.filename}` : coverImageUrl || null;
+    const finalBannerUrl = bannerFile ? `/uploads/blog/${bannerFile.filename}` : bannerImageUrl || null;
+
+    let parsedBody = body;
+    if (typeof body === 'string') {
+      try {
+        parsedBody = JSON.parse(body);
+      } catch {
+        parsedBody = [];
+      }
+    }
+
     const post = await blogService.createPost({
       title,
       slug,
@@ -60,8 +83,9 @@ adminBlogRouter.post('/', async (req, res, next) => {
       authorName,
       authorRole,
       publishedAt,
-      body,
-      coverImageUrl,
+      body: parsedBody,
+      coverImageUrl: finalCoverUrl,
+      bannerImageUrl: finalBannerUrl,
       isActive: isActive !== undefined ? String(isActive) === 'true' || isActive === true : true,
     });
 
@@ -72,13 +96,29 @@ adminBlogRouter.post('/', async (req, res, next) => {
 });
 
 // PUT /api/admin/blog/:id - Update blog post
-adminBlogRouter.put('/:id', async (req, res, next) => {
+adminBlogRouter.put('/:id', blogImageFields, async (req, res, next) => {
   try {
     const id = String(req.params.id);
-    const { title, slug, excerpt, categoryId, authorName, authorRole, publishedAt, body, coverImageUrl, isActive } = req.body;
+    const { title, slug, excerpt, categoryId, authorName, authorRole, publishedAt, body, coverImageUrl, bannerImageUrl, isActive } = req.body || {};
 
     if (categoryId !== undefined) {
       await categoriesService.getCategoryById(categoryId);
+    }
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | undefined;
+    const coverFile = files?.['coverImage']?.[0];
+    const bannerFile = files?.['bannerImage']?.[0];
+
+    const finalCoverUrl = coverFile ? `/uploads/blog/${coverFile.filename}` : coverImageUrl !== undefined ? coverImageUrl : undefined;
+    const finalBannerUrl = bannerFile ? `/uploads/blog/${bannerFile.filename}` : bannerImageUrl !== undefined ? bannerImageUrl : undefined;
+
+    let parsedBody = body;
+    if (typeof body === 'string') {
+      try {
+        parsedBody = JSON.parse(body);
+      } catch {
+        parsedBody = undefined;
+      }
     }
 
     const post = await blogService.updatePost(id, {
@@ -89,8 +129,9 @@ adminBlogRouter.put('/:id', async (req, res, next) => {
       ...(authorName !== undefined && { authorName }),
       ...(authorRole !== undefined && { authorRole }),
       ...(publishedAt !== undefined && { publishedAt }),
-      ...(body !== undefined && { body }),
-      ...(coverImageUrl !== undefined && { coverImageUrl }),
+      ...(parsedBody !== undefined && { body: parsedBody }),
+      ...(finalCoverUrl !== undefined && { coverImageUrl: finalCoverUrl }),
+      ...(finalBannerUrl !== undefined && { bannerImageUrl: finalBannerUrl }),
       ...(isActive !== undefined && { isActive: String(isActive) === 'true' || isActive === true }),
     });
 

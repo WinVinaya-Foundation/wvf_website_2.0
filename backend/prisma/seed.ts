@@ -755,6 +755,105 @@ async function main() {
       console.log(`Updated blog post: ${post.title}`);
     }
   }
+
+  // Seed sample newsletters and create sample PDF files
+  const baseNewsletterUploadsDir = path.join(process.cwd(), 'uploads', 'newsletters');
+  if (!fs.existsSync(baseNewsletterUploadsDir)) {
+    fs.mkdirSync(baseNewsletterUploadsDir, { recursive: true });
+  }
+
+  const initialNewsletters = [
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'August 2026',
+      publishedAt: new Date('2026-08-01T00:00:00.000Z'),
+      description:
+        "This month: a look inside our newest corporate sensitization sessions, an update on India's 0.36% PWD employment gap, and three placement stories from the Academy's latest cohort.",
+      fileName: 'WinVinaya_Newsletter_August_2026.pdf',
+    },
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'July 2026',
+      publishedAt: new Date('2026-07-01T00:00:00.000Z'),
+      description:
+        'Featuring our Indian Sign Language basics series, a recap of the sensitization workshop at Athma Sakthi Vidyalaya in Bengaluru, and new hiring partners joining this quarter.',
+      fileName: 'WinVinaya_Newsletter_July_2026.pdf',
+    },
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'June 2026',
+      publishedAt: new Date('2026-06-01T00:00:00.000Z'),
+      description:
+        'A closer look at the Samarth MSME initiative, screen-reader accessibility tips for developers, and where this cycle of interns are headed next.',
+      fileName: 'WinVinaya_Newsletter_June_2026.pdf',
+    },
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'May 2026',
+      publishedAt: new Date('2026-05-01T00:00:00.000Z'),
+      description:
+        'Marking Global Accessibility Awareness Day, an update on our CSR-1 corporate partnerships, and a spotlight on the Training & Curriculum team.',
+      fileName: 'WinVinaya_Newsletter_May_2026.pdf',
+    },
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'April 2026',
+      publishedAt: new Date('2026-04-01T00:00:00.000Z'),
+      description:
+        'Spring cohort graduations, a candid Q&A with a WinVinaya Academy alum now working at a hiring partner, and upcoming events across Bengaluru.',
+      fileName: 'WinVinaya_Newsletter_April_2026.pdf',
+    },
+    {
+      title: 'WinVinaya Newsletter',
+      issueLabel: 'March 2026',
+      publishedAt: new Date('2026-03-01T00:00:00.000Z'),
+      description:
+        'A spotlight on our founding team, fresh numbers from the performance dashboard, and how corporate volunteering shaped this quarter.',
+      fileName: 'WinVinaya_Newsletter_March_2026.pdf',
+    },
+  ];
+
+  for (const item of initialNewsletters) {
+    const filePath = path.join(baseNewsletterUploadsDir, item.fileName);
+    if (!fs.existsSync(filePath)) {
+      const samplePdfContent = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kinds [] /Count 1 /Kids [3 0 R] >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 50 >>\nstream\nBT /F1 12 Tf 100 700 TD (${item.title} - ${item.issueLabel}) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000206 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n306\n%%EOF`;
+      fs.writeFileSync(filePath, samplePdfContent);
+    }
+
+    const fileUrl = `/uploads/newsletters/${item.fileName}`;
+    const fileSize = fs.statSync(filePath).size;
+
+    const existing = await prisma.newsletter.findFirst({
+      where: { title: item.title, issueLabel: item.issueLabel },
+    });
+
+    if (!existing) {
+      await prisma.newsletter.create({
+        data: {
+          title: item.title,
+          issueLabel: item.issueLabel,
+          publishedAt: item.publishedAt,
+          description: item.description,
+          fileUrl,
+          fileName: item.fileName,
+          fileSize,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded newsletter: ${item.title} — ${item.issueLabel}`);
+    } else {
+      await prisma.newsletter.update({
+        where: { id: existing.id },
+        data: {
+          description: item.description,
+          fileUrl,
+          fileName: item.fileName,
+          fileSize,
+        },
+      });
+      console.log(`Updated newsletter: ${item.title} — ${item.issueLabel}`);
+    }
+  }
 }
 
 main()

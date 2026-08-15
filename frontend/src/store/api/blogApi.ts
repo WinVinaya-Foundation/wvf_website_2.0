@@ -20,6 +20,7 @@ export interface BlogPostItem {
   publishedAt: string;
   body: BlogContentBlock[];
   coverImageUrl?: string | null;
+  bannerImageUrl?: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -41,6 +42,7 @@ export interface BlogPostInput {
   publishedAt?: string;
   body: BlogContentBlock[];
   coverImageUrl?: string | null;
+  bannerImageUrl?: string | null;
   isActive?: boolean;
 }
 
@@ -69,14 +71,14 @@ export const blogApi = baseApi.injectEndpoints({
           : [{ type: 'Blogs', id: 'ADMIN_LIST' }],
     }),
 
-    createBlogPost: builder.mutation<BlogPostItem, BlogPostInput>({
-      query: (data) => ({ url: '/admin/blog', method: 'POST', data }),
+    createBlogPost: builder.mutation<BlogPostItem, FormData>({
+      query: (formData) => ({ url: '/admin/blog', method: 'POST', data: formData }),
       transformResponse: (response: { post: BlogPostItem }) => response.post,
       invalidatesTags: [{ type: 'Blogs', id: 'LIST' }, { type: 'Blogs', id: 'ADMIN_LIST' }],
     }),
 
-    updateBlogPost: builder.mutation<BlogPostItem, { id: string; data: Partial<BlogPostInput> }>({
-      query: ({ id, data }) => ({ url: `/admin/blog/${id}`, method: 'PUT', data }),
+    updateBlogPost: builder.mutation<BlogPostItem, { id: string; formData: FormData }>({
+      query: ({ id, formData }) => ({ url: `/admin/blog/${id}`, method: 'PUT', data: formData }),
       transformResponse: (response: { post: BlogPostItem }) => response.post,
       invalidatesTags: (_res, _err, { id }) => [
         { type: 'Blogs', id },

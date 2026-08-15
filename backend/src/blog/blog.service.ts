@@ -11,6 +11,7 @@ export interface CreateBlogPostInput {
   publishedAt?: string | Date;
   body: unknown;
   coverImageUrl?: string;
+  bannerImageUrl?: string;
   isActive?: boolean;
 }
 
@@ -24,6 +25,7 @@ export interface UpdateBlogPostInput {
   publishedAt?: string | Date;
   body?: unknown;
   coverImageUrl?: string | null;
+  bannerImageUrl?: string | null;
   isActive?: boolean;
 }
 
@@ -114,6 +116,7 @@ export const blogService = {
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
         body: (data.body as object) ?? [],
         coverImageUrl: data.coverImageUrl || null,
+        bannerImageUrl: data.bannerImageUrl || null,
         isActive: data.isActive ?? true,
       },
       include: { category: true },
@@ -145,6 +148,7 @@ export const blogService = {
         ...(data.publishedAt !== undefined && { publishedAt: new Date(data.publishedAt) }),
         ...(data.body !== undefined && { body: (data.body as object) ?? [] }),
         ...(data.coverImageUrl !== undefined && { coverImageUrl: data.coverImageUrl || null }),
+        ...(data.bannerImageUrl !== undefined && { bannerImageUrl: data.bannerImageUrl || null }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
       include: { category: true },

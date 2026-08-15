@@ -7,17 +7,23 @@ import { Button, Chip, SectionContainer } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
 import { formatDate } from '../../../utils/date';
-import { newsletterIssues } from '../../../pages/resources/newsletterContent';
+import type { NewsletterItem } from '../../../store/api/newsletterApi';
 import NewsletterCoverArt from './NewsletterCoverArt';
+
+export interface FeaturedNewsletterSectionProps {
+  latestIssue?: NewsletterItem;
+}
 
 /** Spotlights the most recently published newsletter issue — cover art on one side, title,
  * description, and a "Read Newsletter" action on the other. */
-export default function FeaturedNewsletterSection() {
-  const [latestIssue] = newsletterIssues;
-  const fileUrl = latestIssue ? documentFileUrl(latestIssue.title, latestIssue.issueLabel) : '';
-  const available = useFileExists(fileUrl);
+export default function FeaturedNewsletterSection({ latestIssue }: FeaturedNewsletterSectionProps) {
+  const fallbackUrl = latestIssue ? documentFileUrl(latestIssue.title, latestIssue.issueLabel) : '';
+  const isFallbackAvailable = useFileExists(fallbackUrl);
 
   if (!latestIssue) return null;
+
+  const fileUrl = latestIssue.fileUrl || (isFallbackAvailable ? fallbackUrl : null);
+  const available = Boolean(fileUrl);
 
   return (
     <SectionContainer labelledBy="featured-newsletter-heading">
@@ -32,7 +38,16 @@ export default function FeaturedNewsletterSection() {
           boxShadow: (theme) => `0 20px 48px -16px ${alpha(theme.palette.grey[900], 0.16)}`,
         }}
       >
-        <NewsletterCoverArt accent="secondary" issueLabel={latestIssue.issueLabel} height={{ xs: 220, md: '100%' }} iconSize={72} />
+        {latestIssue.coverImageUrl ? (
+          <Box
+            component="img"
+            src={latestIssue.coverImageUrl}
+            alt={`${latestIssue.title} ${latestIssue.issueLabel}`}
+            sx={{ width: '100%', height: { xs: 220, md: '100%' }, objectFit: 'cover', minHeight: 280 }}
+          />
+        ) : (
+          <NewsletterCoverArt accent="secondary" issueLabel={latestIssue.issueLabel} height={{ xs: 220, md: '100%' }} iconSize={72} />
+        )}
 
         <Box sx={{ p: { xs: 3.5, sm: 5, md: 6 }, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <Stack spacing={2.5}>
@@ -64,7 +79,7 @@ export default function FeaturedNewsletterSection() {
             </Stack>
 
             <Box sx={{ pt: 1 }}>
-              {available ? (
+              {available && fileUrl ? (
                 <Button
                   component="a"
                   href={fileUrl}

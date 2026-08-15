@@ -12,6 +12,7 @@ import {
   AdminStoriesPage,
   AdminTestimonialsPage,
   AdminBlogPage,
+  AdminNewslettersPage,
   BlogPage,
   BlogPostPage,
   CareersPage,
@@ -222,6 +223,17 @@ const adminBlogRoute = createRoute({
   component: AdminBlogPage,
 });
 
+const adminNewslettersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/newsletters',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminNewslettersPage,
+});
+
 // Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -283,6 +295,7 @@ const routeTree = rootRoute.addChildren([
   adminStoriesRoute,
   adminTestimonialsRoute,
   adminBlogRoute,
+  adminNewslettersRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);

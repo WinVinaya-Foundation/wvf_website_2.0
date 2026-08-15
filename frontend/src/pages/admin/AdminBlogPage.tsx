@@ -53,6 +53,8 @@ interface BlogFormState {
   authorRole: string;
   publishedAt: string;
   bodyText: string;
+  coverImageUrl: string;
+  bannerImageUrl: string;
   isActive: boolean;
 }
 
@@ -65,6 +67,8 @@ const initialFormState: BlogFormState = {
   authorRole: 'WinVinaya Foundation',
   publishedAt: new Date().toISOString().split('T')[0],
   bodyText: '',
+  coverImageUrl: '',
+  bannerImageUrl: '',
   isActive: true,
 };
 
@@ -132,8 +136,13 @@ export default function AdminBlogPage() {
     return posts.filter((p) => p.categoryId === selectedCategoryId);
   }, [posts, selectedCategoryId]);
 
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
   const handleOpenCreate = () => {
     setEditingPost(null);
+    setCoverFile(null);
+    setBannerFile(null);
     setForm({
       ...initialFormState,
       categoryId: categories[0]?.id || '',
@@ -143,6 +152,8 @@ export default function AdminBlogPage() {
 
   const handleOpenEdit = (post: BlogPostItem) => {
     setEditingPost(post);
+    setCoverFile(null);
+    setBannerFile(null);
     setForm({
       title: post.title,
       slug: post.slug,
@@ -152,36 +163,44 @@ export default function AdminBlogPage() {
       authorRole: post.authorRole,
       publishedAt: post.publishedAt.split('T')[0],
       bodyText: convertBlocksToBodyText(post.body),
+      coverImageUrl: post.coverImageUrl || '',
+      bannerImageUrl: post.bannerImageUrl || '',
       isActive: post.isActive,
     });
     setModalOpen(true);
   };
 
-  const handleSave = async () => {
-    if (!form.title.trim() || !form.excerpt.trim() || !form.categoryId || !form.bodyText.trim()) {
-      setToast({ open: true, message: 'Title, excerpt, category, and article body are required', severity: 'error' });
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!form.title.trim() || !form.excerpt.trim() || !form.categoryId) {
+      setToast({ open: true, message: 'Title, excerpt, and category are required', severity: 'error' });
       return;
     }
 
     try {
-      const bodyBlocks = parseBodyTextToBlocks(form.bodyText);
-      const payload = {
-        title: form.title.trim(),
-        slug: form.slug.trim() || undefined,
-        excerpt: form.excerpt.trim(),
-        categoryId: form.categoryId,
-        authorName: form.authorName.trim(),
-        authorRole: form.authorRole.trim(),
-        publishedAt: form.publishedAt,
-        body: bodyBlocks,
-        isActive: form.isActive,
-      };
+      const parsedBody = parseBodyTextToBlocks(form.bodyText);
+
+      const formData = new FormData();
+      formData.append('title', form.title.trim());
+      if (form.slug.trim()) formData.append('slug', form.slug.trim());
+      formData.append('excerpt', form.excerpt.trim());
+      formData.append('categoryId', form.categoryId);
+      formData.append('authorName', form.authorName.trim());
+      formData.append('authorRole', form.authorRole.trim());
+      formData.append('publishedAt', form.publishedAt);
+      formData.append('body', JSON.stringify(parsedBody));
+      formData.append('coverImageUrl', form.coverImageUrl.trim());
+      formData.append('bannerImageUrl', form.bannerImageUrl.trim());
+      formData.append('isActive', String(form.isActive));
+
+      if (coverFile) formData.append('coverImage', coverFile);
+      if (bannerFile) formData.append('bannerImage', bannerFile);
 
       if (editingPost) {
-        await updatePost({ id: editingPost.id, data: payload }).unwrap();
+        await updatePost({ id: editingPost.id, formData }).unwrap();
         setToast({ open: true, message: 'Blog post updated successfully', severity: 'success' });
       } else {
-        await createPost(payload).unwrap();
+        await createPost(formData).unwrap();
         setToast({ open: true, message: 'Blog post created successfully', severity: 'success' });
       }
 
@@ -210,7 +229,7 @@ export default function AdminBlogPage() {
   const handleDeleteConfirm = async () => {
     if (!deleteId) return;
     try {
-      await deleteBlogPost(deleteId).unwrap();
+      await deletePost(deleteId).unwrap();
       setToast({ open: true, message: 'Blog post deleted successfully', severity: 'success' });
       setDeleteId(null);
       refetch();
@@ -458,6 +477,72 @@ export default function AdminBlogPage() {
                 onChange={(e) => setForm((f) => ({ ...f, publishedAt: e.target.value }))}
                 slotProps={{ inputLabel: { shrink: true } }}
               />
+            </Stack>
+
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
+                  Tile Image (Grid Cards)
+                </Typography>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  id="blog-cover-upload"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setCoverFile(e.target.files[0]);
+                    }
+                  }}
+                />
+                <label htmlFor="blog-cover-upload">
+                  <Button variant="outlined" component="span" fullWidth>
+                    {coverFile ? coverFile.name : form.coverImageUrl ? 'Change Tile Image File' : 'Choose Tile Image File'}
+                  </Button>
+                </label>
+                {coverFile && (
+                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'success.main', fontWeight: 600 }}>
+                    Selected: {coverFile.name} ({(coverFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </Typography>
+                )}
+                {!coverFile && form.coverImageUrl && (
+                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'text.secondary' }} noWrap>
+                    Current: {form.coverImageUrl}
+                  </Typography>
+                )}
+              </Box>
+
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
+                  Banner Image (Detail Header)
+                </Typography>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  id="blog-banner-upload"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setBannerFile(e.target.files[0]);
+                    }
+                  }}
+                />
+                <label htmlFor="blog-banner-upload">
+                  <Button variant="outlined" component="span" fullWidth>
+                    {bannerFile ? bannerFile.name : form.bannerImageUrl ? 'Change Banner Image File' : 'Choose Banner Image File'}
+                  </Button>
+                </label>
+                {bannerFile && (
+                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'success.main', fontWeight: 600 }}>
+                    Selected: {bannerFile.name} ({(bannerFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </Typography>
+                )}
+                {!bannerFile && form.bannerImageUrl && (
+                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'text.secondary' }} noWrap>
+                    Current: {form.bannerImageUrl}
+                  </Typography>
+                )}
+              </Box>
             </Stack>
 
             <TextField

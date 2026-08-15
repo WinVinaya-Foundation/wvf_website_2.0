@@ -59,7 +59,7 @@ export default function ArticleHeaderSection({ post }: ArticleHeaderSectionProps
         </Stack>
 
         <Box sx={{ borderRadius: 5, overflow: 'hidden', boxShadow: (theme) => `0 20px 48px -16px ${alpha(theme.palette.grey[900], 0.2)}` }}>
-          <BlogCoverArt category={categoryLabel} color={color} coverImageUrl={post.coverImageUrl} height={{ xs: 220, sm: 320, md: 420 }} iconSize={100} />
+          <BlogCoverArt category={categoryLabel} color={color} coverImageUrl={post.bannerImageUrl || post.coverImageUrl} height={{ xs: 220, sm: 320, md: 420 }} iconSize={100} />
         </Box>
       </Stack>
     </SectionContainer>

@@ -20,6 +20,8 @@ import { testimonialsRouter } from './testimonials/testimonials.routes.js';
 import { adminTestimonialsRouter } from './testimonials/testimonials.admin.routes.js';
 import { publicBlogRouter } from './blog/blog.routes.js';
 import { adminBlogRouter } from './blog/blog.admin.routes.js';
+import { publicNewsletterRouter } from './newsletter/newsletter.routes.js';
+import { adminNewsletterRouter } from './newsletter/newsletter.admin.routes.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -45,6 +47,7 @@ app.use('/api/admin/categories', adminCategoriesRouter);
 app.use('/api/admin/stories', adminStoriesRouter);
 app.use('/api/admin/testimonials', adminTestimonialsRouter);
 app.use('/api/admin/blog', adminBlogRouter);
+app.use('/api/admin/newsletter', adminNewsletterRouter);
 app.use('/api/donations', donationsRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/events', eventsRouter);
@@ -53,6 +56,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/stories', storiesRouter);
 app.use('/api/testimonials', testimonialsRouter);
 app.use('/api/blog', publicBlogRouter);
+app.use('/api/newsletter', publicNewsletterRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
