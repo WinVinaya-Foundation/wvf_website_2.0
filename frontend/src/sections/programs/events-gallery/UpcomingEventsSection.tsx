@@ -33,7 +33,7 @@ export default function UpcomingEventsSection() {
           <Typography variant="body1">No upcoming events right now — check back soon.</Typography>
         </Stack>
       ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3, alignItems: 'stretch' }}>
           {events.map((event) => {
             const meta = getCategoryMeta(event.category);
             const Icon = meta.Icon;
@@ -67,7 +67,7 @@ export default function UpcomingEventsSection() {
                     />
                   </Stack>
 
-                  <Typography variant="h6" component="p" sx={{ fontWeight: 700, mb: 1.5 }}>
+                  <Typography variant="h6" component="p" sx={{ fontWeight: 700, mb: 1.5, minHeight: { sm: 56 }, display: 'flex', alignItems: 'flex-start' }}>
                     {event.title}
                   </Typography>
 
@@ -86,17 +86,31 @@ export default function UpcomingEventsSection() {
                     </Stack>
                   </Stack>
 
-                  {event.isDateTBA && (
-                    <Typography variant="caption" sx={{ display: 'block', mb: 1.5, color: 'text.secondary', fontStyle: 'italic' }}>
-                      Exact date shared closer to the event — reach out to be notified.
-                    </Typography>
-                  )}
+                  <Box sx={{ minHeight: 24, mb: 1.5 }}>
+                    {event.isDateTBA && (
+                      <Typography variant="caption" sx={{ display: 'block', color: 'text.secondary', fontStyle: 'italic' }}>
+                        Exact date shared closer to the event — reach out to be notified.
+                      </Typography>
+                    )}
+                  </Box>
 
-                  <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1 }}>
-                    {event.description}
-                  </Typography>
+                  <Box
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: '0.875rem',
+                      lineHeight: 1.6,
+                      flexGrow: 1,
+                      '& p': { m: 0, mb: 1 },
+                      '& p:last-child': { mb: 0 },
+                      '& ul, & ol': { pl: 2.5, m: 0, mb: 1 },
+                      '& li': { mb: 0.5 },
+                      '& a': { color: 'primary.main', textDecoration: 'underline' },
+                      '& strong': { color: 'text.primary', fontWeight: 600 },
+                    }}
+                    dangerouslySetInnerHTML={{ __html: event.description }}
+                  />
 
-                  {event.ctaLabel && event.ctaLink && (
+                  {event.ctaLabel && event.ctaLink ? (
                     <Button
                       component={Link}
                       to={event.ctaLink}
@@ -107,6 +121,8 @@ export default function UpcomingEventsSection() {
                     >
                       {event.ctaLabel}
                     </Button>
+                  ) : (
+                    <Box sx={{ mt: 'auto' }} />
                   )}
                 </CardContent>
               </Card>

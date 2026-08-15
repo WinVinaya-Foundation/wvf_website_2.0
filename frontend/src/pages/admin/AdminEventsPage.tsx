@@ -31,7 +31,7 @@ import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded
 import EventBusyRoundedIcon from '@mui/icons-material/EventBusyRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import AdminLayout from '../../layout/AdminLayout/AdminLayout';
-import { DataGrid, StatCard, StatusChip } from '../../components';
+import { countWords, DataGrid, DatePickerWithFormat, RichTextEditor, StatCard, StatusChip } from '../../components';
 import { useAdminSession } from '../../hooks/useAdminSession';
 import {
   useGetAdminEventsQuery,
@@ -50,6 +50,9 @@ const statusLabels: Record<EventStatus, string> = {
   UPCOMING: 'Upcoming',
   COMPLETED: 'Completed',
 };
+
+const MAX_TITLE_WORDS = 20;
+const MAX_DESC_WORDS = 80;
 
 interface EventFormState {
   title: string;
@@ -144,6 +147,18 @@ export default function AdminEventsPage() {
   async function handleSaveEvent() {
     if (!form.title.trim() || !form.categoryId || !form.dateLabel.trim() || !form.location.trim() || !form.description.trim()) {
       setToast({ open: true, message: 'Title, category, date label, location and description are required', severity: 'error' });
+      return;
+    }
+
+    const titleWordCount = countWords(form.title);
+    if (titleWordCount > MAX_TITLE_WORDS) {
+      setToast({ open: true, message: `Title exceeds maximum limit of ${MAX_TITLE_WORDS} words (currently ${titleWordCount} words)`, severity: 'error' });
+      return;
+    }
+
+    const descWordCount = countWords(form.description);
+    if (descWordCount > MAX_DESC_WORDS) {
+      setToast({ open: true, message: `Description exceeds maximum limit of ${MAX_DESC_WORDS} words (currently ${descWordCount} words)`, severity: 'error' });
       return;
     }
 
@@ -321,14 +336,27 @@ export default function AdminEventsPage() {
         <DialogTitle sx={{ fontWeight: 700 }}>{editingEvent ? 'Edit Event' : 'Add New Event'}</DialogTitle>
         <DialogContent dividers>
           <Stack spacing={2.5} sx={{ pt: 0.5 }}>
-            <TextField
-              label="Event Title"
-              fullWidth
-              required
-              value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              placeholder="e.g. WinVinaya Academy — New Cohort Orientation"
-            />
+            {(() => {
+              const titleWords = countWords(form.title);
+              const isTitleOver = titleWords > MAX_TITLE_WORDS;
+              return (
+                <TextField
+                  label="Event Title"
+                  fullWidth
+                  required
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  placeholder="e.g. WinVinaya Academy — New Cohort Orientation"
+                  error={isTitleOver}
+                  helperText={`Word count: ${titleWords} / ${MAX_TITLE_WORDS} words`}
+                  slotProps={{
+                    formHelperText: {
+                      sx: { textAlign: 'right', fontWeight: 600, color: isTitleOver ? 'error.main' : 'text.secondary' },
+                    },
+                  }}
+                />
+              );
+            })()}
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: 'flex-start' }}>
               <Box sx={{ flex: 1, width: '100%' }}>
@@ -374,13 +402,9 @@ export default function AdminEventsPage() {
               </FormControl>
             </Stack>
 
-            <TextField
-              label="Date Label"
-              fullWidth
-              required
-              value={form.dateLabel}
-              onChange={(e) => setForm((f) => ({ ...f, dateLabel: e.target.value }))}
-              placeholder="e.g. Next cohort — September 2026"
+            <DatePickerWithFormat
+              dateLabelValue={form.dateLabel}
+              onChangeDateLabel={(val) => setForm((f) => ({ ...f, dateLabel: val }))}
             />
 
             <FormControlLabel
@@ -407,15 +431,13 @@ export default function AdminEventsPage() {
               placeholder="e.g. Bengaluru & Online"
             />
 
-            <TextField
+            <RichTextEditor
               label="Description"
-              fullWidth
-              required
-              multiline
-              rows={3}
               value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Short description shown on the event card..."
+              onChange={(val) => setForm((f) => ({ ...f, description: val }))}
+              placeholder="Short description shown on the event card... (Supports rich text formatting)"
+              maxWords={MAX_DESC_WORDS}
+              showWordCount
             />
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

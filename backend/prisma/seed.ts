@@ -35,12 +35,14 @@ const defaultCategories = [
 ];
 
 async function main() {
+  const categoryMap = new Map<string, string>();
   for (const category of defaultCategories) {
-    await prisma.category.upsert({
+    const createdCat = await prisma.category.upsert({
       where: { label: category.label },
       update: {},
       create: { label: category.label, color: category.color },
     });
+    categoryMap.set(createdCat.label, createdCat.id);
     console.log(`Seeded category: ${category.label}`);
   }
 
@@ -52,6 +54,106 @@ async function main() {
       create: { name: owner.name, username: owner.username, email: owner.email, role: 'OWNER', passwordHash },
     });
     console.log(`Seeded admin user: ${owner.email}`);
+  }
+
+  // Seed sample events
+  const initialEvents = [
+    {
+      title: 'WinVinaya Academy — IT/BFSI Skill Development Cohort 18',
+      categoryLabel: 'WinVinaya Academy',
+      status: 'UPCOMING' as const,
+      dateLabel: 'September 2026',
+      isDateTBA: false,
+      location: 'Bengaluru & Online',
+      description:
+        'Free 4-month intensive training program in Software Engineering, Core Java, SQL, and Soft Skills for Persons with Disabilities (Deaf, Hard of Hearing, Orthopedically Impaired, Visual Impairment).',
+      ctaLabel: 'Apply Now',
+      ctaLink: '/programs/academy',
+    },
+    {
+      title: 'Samarth Rural Hub Launch — Nurturing Rural Entrepreneurs with Disabilities',
+      categoryLabel: 'Samarth',
+      status: 'UPCOMING' as const,
+      dateLabel: 'October 2026',
+      isDateTBA: true,
+      location: 'Rural Tamil Nadu & Karnataka',
+      description:
+        'Launching localized training and mentorship centers for rural Persons with Disabilities to start sustainable micro-enterprises in their local communities.',
+      ctaLabel: 'Learn About Samarth',
+      ctaLink: '/programs/samarth',
+    },
+    {
+      title: 'Inclusive Hiring & Workplace Accessibility Webinar',
+      categoryLabel: 'Corporate & Awards',
+      status: 'UPCOMING' as const,
+      dateLabel: 'November 15, 2026',
+      isDateTBA: false,
+      location: 'Virtual (Zoom & YouTube Live)',
+      description:
+        'Interactive session for HR leaders, Talent Acquisition teams, and CSR managers on reasonable accommodation, sign language interpreters, and assistive tech.',
+      ctaLabel: 'Register for Webinar',
+      ctaLink: '/contact',
+    },
+    {
+      title: 'Inclusive Job Fair 2026 — Connecting Talent with Corporate Partners',
+      categoryLabel: 'Community & Outreach',
+      status: 'COMPLETED' as const,
+      dateLabel: 'June 2026',
+      isDateTBA: false,
+      location: 'Bengaluru Campus',
+      description: 'Over 150 candidates with disabilities interviewed with top IT, BFSI, and retail corporate partners for full-time roles.',
+      ctaLabel: 'Read Event Summary',
+      ctaLink: '/resources/blog',
+    },
+    {
+      title: 'WinVinaya Academy Cohort 17 Graduation & Placement Drive',
+      categoryLabel: 'WinVinaya Academy',
+      status: 'COMPLETED' as const,
+      dateLabel: 'April 2026',
+      isDateTBA: false,
+      location: 'Bengaluru & Hybrid',
+      description: 'Graduation ceremony celebrating 45 scholars with disabilities who successfully completed full-stack software development and financial services training.',
+      ctaLabel: 'View Gallery Album',
+      ctaLink: '/programs/events-gallery#gallery',
+    },
+    {
+      title: 'National Sign Language Awareness & Inclusive Workplace Workshop',
+      categoryLabel: 'Community & Outreach',
+      status: 'COMPLETED' as const,
+      dateLabel: 'January 2026',
+      isDateTBA: false,
+      location: 'Virtual',
+      description: 'Awareness workshop for ally communities, corporate volunteers, and educators introducing basic Indian Sign Language (ISL) communication.',
+      ctaLabel: 'Explore ISL Lessons',
+      ctaLink: '/involve/sign-language',
+    },
+  ];
+
+  for (const evt of initialEvents) {
+    const categoryId = categoryMap.get(evt.categoryLabel);
+    if (!categoryId) continue;
+
+    const existing = await prisma.event.findFirst({
+      where: { title: evt.title },
+    });
+
+    if (!existing) {
+      await prisma.event.create({
+        data: {
+          title: evt.title,
+          categoryId,
+          status: evt.status,
+          dateLabel: evt.dateLabel,
+          isDateTBA: evt.isDateTBA,
+          location: evt.location,
+          description: evt.description,
+          ctaLabel: evt.ctaLabel,
+          ctaLink: evt.ctaLink,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded event: [${evt.status}] ${evt.title}`);
+    }
   }
 
   // Seed sample reports and ensure directory structure exists

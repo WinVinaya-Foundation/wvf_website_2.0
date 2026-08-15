@@ -31,7 +31,7 @@ export default function CompletedEventsSection() {
           <Typography variant="body1">No completed events to show yet.</Typography>
         </Stack>
       ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 3, alignItems: 'stretch' }}>
           {events.map((event) => {
             const meta = getCategoryMeta(event.category);
             const Icon = meta.Icon;
@@ -65,7 +65,7 @@ export default function CompletedEventsSection() {
                     />
                   </Stack>
 
-                  <Typography variant="h6" component="p" sx={{ fontWeight: 700, mb: 1.5 }}>
+                  <Typography variant="h6" component="p" sx={{ fontWeight: 700, mb: 1.5, minHeight: { sm: 56 }, display: 'flex', alignItems: 'flex-start' }}>
                     {event.title}
                   </Typography>
 
@@ -84,11 +84,23 @@ export default function CompletedEventsSection() {
                     </Stack>
                   </Stack>
 
-                  <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1 }}>
-                    {event.description}
-                  </Typography>
+                  <Box
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: '0.875rem',
+                      lineHeight: 1.6,
+                      flexGrow: 1,
+                      '& p': { m: 0, mb: 1 },
+                      '& p:last-child': { mb: 0 },
+                      '& ul, & ol': { pl: 2.5, m: 0, mb: 1 },
+                      '& li': { mb: 0.5 },
+                      '& a': { color: 'primary.main', textDecoration: 'underline' },
+                      '& strong': { color: 'text.primary', fontWeight: 600 },
+                    }}
+                    dangerouslySetInnerHTML={{ __html: event.description }}
+                  />
 
-                  {event.ctaLabel && event.ctaLink && (
+                  {event.ctaLabel && event.ctaLink ? (
                     <Button
                       component={Link}
                       to={event.ctaLink}
@@ -99,6 +111,8 @@ export default function CompletedEventsSection() {
                     >
                       {event.ctaLabel}
                     </Button>
+                  ) : (
+                    <Box sx={{ mt: 'auto' }} />
                   )}
                 </CardContent>
               </Card>

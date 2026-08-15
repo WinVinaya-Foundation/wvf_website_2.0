@@ -33,7 +33,7 @@ import CollectionsRoundedIcon from '@mui/icons-material/CollectionsRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AdminLayout from '../../layout/AdminLayout/AdminLayout';
-import { DataGrid, StatCard, StatusChip } from '../../components';
+import { DataGrid, DatePickerWithFormat, StatCard, StatusChip } from '../../components';
 import { useAdminSession } from '../../hooks/useAdminSession';
 import {
   useGetAdminAlbumsQuery,
@@ -437,13 +437,9 @@ export default function AdminGalleryPage() {
               </MuiButton>
             </Box>
 
-            <TextField
-              label="Date Label"
-              fullWidth
-              required
-              value={albumForm.dateLabel}
-              onChange={(e) => setAlbumForm((f) => ({ ...f, dateLabel: e.target.value }))}
-              placeholder="e.g. March 2026 Batch"
+            <DatePickerWithFormat
+              dateLabelValue={albumForm.dateLabel}
+              onChangeDateLabel={(val) => setAlbumForm((f) => ({ ...f, dateLabel: val }))}
             />
 
             <FormControlLabel
