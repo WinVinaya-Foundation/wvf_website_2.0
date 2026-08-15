@@ -8,6 +8,8 @@ export const BLOG_UPLOADS_DIR = path.join(process.cwd(), 'uploads', 'blog');
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 
+import crypto from 'crypto';
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     if (!fs.existsSync(BLOG_UPLOADS_DIR)) {
@@ -18,7 +20,7 @@ const storage = multer.diskStorage({
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const safeBaseName = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
-    const filename = `${Date.now()}_${Math.round(Math.random() * 1e9)}_${safeBaseName}${ext}`;
+    const filename = `${Date.now()}_${crypto.randomUUID()}_${safeBaseName}${ext}`;
     cb(null, filename);
   },
 });

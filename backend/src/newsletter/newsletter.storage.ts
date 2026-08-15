@@ -5,6 +5,8 @@ import { HttpError } from '../lib/httpError.js';
 
 export const NEWSLETTER_UPLOADS_DIR = path.join(process.cwd(), 'uploads', 'newsletters');
 
+import crypto from 'crypto';
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     if (!fs.existsSync(NEWSLETTER_UPLOADS_DIR)) {
@@ -15,7 +17,7 @@ const storage = multer.diskStorage({
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const safeBaseName = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
-    const filename = `${Date.now()}_${safeBaseName}${ext}`;
+    const filename = `${Date.now()}_${crypto.randomUUID()}_${safeBaseName}${ext}`;
     cb(null, filename);
   },
 });
