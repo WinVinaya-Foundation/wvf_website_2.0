@@ -37,6 +37,219 @@ async function main() {
     });
     console.log(`Seeded admin user: ${owner.email}`);
   }
+
+  // Seed sample reports and ensure directory structure exists
+  const path = await import('path');
+  const fs = await import('fs');
+
+  const baseUploadsDir = path.join(process.cwd(), 'uploads', 'reports');
+
+  const initialReports = [
+    // Annual Reports
+    {
+      title: 'Annual Report 2024–2025',
+      category: 'ANNUAL' as const,
+      year: '2024–2025',
+      description: 'Annual impact, reach, and program milestone achievements.',
+      fileName: 'Annual_Report_2024_2025.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'annual',
+    },
+    {
+      title: 'Annual Report 2023–2024',
+      category: 'ANNUAL' as const,
+      year: '2023–2024',
+      description: 'Comprehensive annual performance review.',
+      fileName: 'Annual_Report_2023_2024.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'annual',
+    },
+    {
+      title: 'Annual Report 2022–2023',
+      category: 'ANNUAL' as const,
+      year: '2022–2023',
+      description: 'Yearly program metrics and scholar placements.',
+      fileName: 'Annual_Report_2022_2023.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'annual',
+    },
+    {
+      title: 'Annual Report 2021–2022',
+      category: 'ANNUAL' as const,
+      year: '2021–2022',
+      description: 'Impact highlights and skilling metrics.',
+      fileName: 'Annual_Report_2021_2022.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'annual',
+    },
+    {
+      title: 'Annual Report 2016–2020',
+      category: 'ANNUAL' as const,
+      year: '2016–2020',
+      description: 'Covers the founding years as a combined report.',
+      fileName: 'Annual_Report_2016_2020.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'annual',
+    },
+    // Financial Reports
+    {
+      title: 'Financial Audited Report FY 2023–24',
+      category: 'FINANCIAL' as const,
+      year: 'FY 2023–24',
+      description: 'Audited financial statements and balance sheet.',
+      fileName: 'Financial_Report_FY_2023_24.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'financial',
+    },
+    {
+      title: 'Financial Audited Report FY 2022–23',
+      category: 'FINANCIAL' as const,
+      year: 'FY 2022–23',
+      description: 'Audited financial audit filing.',
+      fileName: 'Financial_Report_FY_2022_23.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'financial',
+    },
+    {
+      title: 'Financial Audited Report FY 2021–22',
+      category: 'FINANCIAL' as const,
+      year: 'FY 2021–22',
+      description: 'Annual financial statement.',
+      fileName: 'Financial_Report_FY_2021_22.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'financial',
+    },
+    {
+      title: 'Financial Audited Report FY 2020–21',
+      category: 'FINANCIAL' as const,
+      year: 'FY 2020–21',
+      description: 'Financial audit report.',
+      fileName: 'Financial_Report_FY_2020_21.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'financial',
+    },
+    {
+      title: 'Financial Audited Report FY 2019–20',
+      category: 'FINANCIAL' as const,
+      year: 'FY 2019–20',
+      description: 'Audited balance sheet.',
+      fileName: 'Financial_Report_FY_2019_20.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'financial',
+    },
+    // Legal Documents
+    {
+      title: '80G Certificate',
+      category: 'LEGAL' as const,
+      year: undefined,
+      description: 'Tax exemption certificate for donors under Section 80G.',
+      fileName: '80G_Certificate.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'legal',
+    },
+    {
+      title: '12A Certificate',
+      category: 'LEGAL' as const,
+      year: undefined,
+      description: 'Income tax exemption registration certificate for the trust.',
+      fileName: '12A_Certificate.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'legal',
+    },
+    {
+      title: 'CSR-1 MCA Approval Letter',
+      category: 'LEGAL' as const,
+      year: undefined,
+      description: 'Ministry of Corporate Affairs CSR registration approval enabling corporate funding.',
+      fileName: 'CSR1_Approval_Letter.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'legal',
+    },
+    // Research Resources
+    {
+      title: 'Disability Hiring Perspective Study — Feedback Insights',
+      category: 'RESEARCH' as const,
+      year: '2024',
+      description: 'Field research insights on employer perceptions and PwD candidate integration.',
+      fileName: 'Disability_Hiring_Perspective_Study.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'research',
+    },
+    {
+      title: 'Recommendations for Training Persons with Disabilities',
+      category: 'RESEARCH' as const,
+      year: '2023',
+      description: 'Guidelines on inclusive curriculum design and Indian Sign Language integration.',
+      fileName: 'Recommendations_Training_PwDs.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'research',
+    },
+    {
+      title: 'Recommendations for Hiring Persons with Disabilities',
+      category: 'RESEARCH' as const,
+      year: '2023',
+      description: 'Actionable steps for talent acquisition teams sourcing PwD candidates.',
+      fileName: 'Recommendations_Hiring_PwDs.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'research',
+    },
+    {
+      title: 'Best Practices in Recruiting Deaf Candidates',
+      category: 'RESEARCH' as const,
+      year: '2023',
+      description: 'Best practice guide for interview etiquette and ISL interpretation.',
+      fileName: 'Best_Practices_Deaf_Recruitment.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'research',
+    },
+    {
+      title: 'How Corporates Recruit & Integrate PwDs',
+      category: 'RESEARCH' as const,
+      year: '2022',
+      description: 'Case studies of corporate onboarding and workplace accommodations.',
+      fileName: 'Corporate_PwD_Integration_Guide.pdf',
+      mimeType: 'application/pdf',
+      subfolder: 'research',
+    },
+  ];
+
+  for (const rep of initialReports) {
+    const folderPath = path.join(baseUploadsDir, rep.subfolder);
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath, { recursive: true });
+    }
+
+    const filePath = path.join(folderPath, rep.fileName);
+    if (!fs.existsSync(filePath)) {
+      // Create sample PDF placeholder content if file doesn't exist
+      const samplePdfContent = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kinds [] /Count 1 /Kids [3 0 R] >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 50 >>\nstream\nBT /F1 12 Tf 100 700 TD (${rep.title}) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000206 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n306\n%%EOF`;
+      fs.writeFileSync(filePath, samplePdfContent);
+    }
+
+    const fileUrl = `/uploads/reports/${rep.subfolder}/${rep.fileName}`;
+    const fileSize = fs.statSync(filePath).size;
+
+    const existing = await prisma.report.findFirst({
+      where: { title: rep.title, category: rep.category },
+    });
+
+    if (!existing) {
+      await prisma.report.create({
+        data: {
+          title: rep.title,
+          category: rep.category,
+          year: rep.year,
+          description: rep.description,
+          fileUrl,
+          fileName: rep.fileName,
+          fileSize,
+          mimeType: rep.mimeType,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded report: [${rep.category}] ${rep.title}`);
+    }
+  }
 }
 
 main()

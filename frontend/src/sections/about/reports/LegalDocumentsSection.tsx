@@ -4,10 +4,12 @@ import VerifiedRounded from '@mui/icons-material/VerifiedRounded';
 import AccountBalanceRounded from '@mui/icons-material/AccountBalanceRounded';
 import { DocumentCard, SectionContainer, SectionHeading } from '../../../components';
 import { legalDocuments } from '../../../pages/about/reportsContent';
+import { useGetPublicReportsQuery } from '../../../store/api/reportsApi';
 
 /** Distinctly styled — a tinted band, not another plain white/grey section — because this is
  * the block corporate donors and CSR teams actually came here to check. */
 export default function LegalDocumentsSection() {
+  const { data: apiReports } = useGetPublicReportsQuery({ category: 'LEGAL' });
   return (
     <SectionContainer
       bgcolor={(theme) => alpha(theme.palette.secondary.main, 0.06)}
@@ -47,8 +49,15 @@ export default function LegalDocumentsSection() {
       </Stack>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 3 }}>
-        {legalDocuments.documents.map((doc) => (
-          <DocumentCard key={doc.title} title={doc.title} description={doc.description} icon={<VerifiedRounded />} />
+        {(apiReports && apiReports.length > 0
+          ? apiReports.map((r) => ({
+              title: r.title,
+              description: r.description || undefined,
+              fileUrl: r.fileUrl,
+            }))
+          : legalDocuments.documents
+        ).map((doc) => (
+          <DocumentCard key={doc.title} title={doc.title} description={doc.description} fileUrl={doc.fileUrl} icon={<VerifiedRounded />} />
         ))}
       </Box>
     </SectionContainer>

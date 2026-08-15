@@ -10,6 +10,7 @@ const envSchema = z.object({
   MIN_GENERAL_DONATION_PAISE: z.coerce.number().int().positive().default(50000),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   JWT_EXPIRES_IN: z.string().min(1).default('12h'),
+  MAX_REPORT_FILE_SIZE_MB: z.coerce.number().int().positive().default(15),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 

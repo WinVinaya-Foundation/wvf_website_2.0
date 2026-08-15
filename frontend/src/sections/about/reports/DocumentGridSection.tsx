@@ -33,7 +33,13 @@ export default function DocumentGridSection({
       <SectionHeading eyebrow={eyebrow} title={title} description={description} titleId={titleId} />
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
         {documents.map((doc) => (
-          <DocumentCard key={`${doc.title}-${doc.year ?? ''}`} title={doc.title} year={doc.year} description={doc.description} />
+          <DocumentCard
+            key={`${doc.title}-${doc.year ?? doc.fileUrl ?? ''}`}
+            title={doc.title}
+            year={doc.year || undefined}
+            description={doc.description || undefined}
+            fileUrl={doc.fileUrl}
+          />
         ))}
       </Box>
       {note && (

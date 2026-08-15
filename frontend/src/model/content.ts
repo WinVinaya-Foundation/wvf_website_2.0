@@ -32,4 +32,5 @@ export interface DocumentEntry {
   title: string;
   year?: string;
   description?: string;
+  fileUrl?: string;
 }

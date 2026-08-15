@@ -12,14 +12,25 @@ export interface DocumentCardProps {
   year?: string;
   description?: string;
   icon?: ReactNode;
+  fileUrl?: string;
 }
 
-/** A downloadable document — shows a real "View PDF" link once the file exists at its
- * predictable path (see `documentFileUrl`), otherwise an honest "Coming soon" badge instead
- * of a link that would 404. */
-export default function DocumentCard({ title, year, description, icon = <DescriptionRounded /> }: DocumentCardProps) {
-  const fileUrl = documentFileUrl(title, year);
-  const available = useFileExists(fileUrl);
+export function formatReportFileUrl(url?: string): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api';
+  const backendBase = apiBase.replace(/\/api\/?$/, '');
+  return `${backendBase}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
+/** A downloadable document — shows a real "View Document" link when provided or when the file exists. */
+export default function DocumentCard({ title, year, description, icon = <DescriptionRounded />, fileUrl }: DocumentCardProps) {
+  const fallbackUrl = documentFileUrl(title, year);
+  const targetFileUrl = fileUrl ? formatReportFileUrl(fileUrl) : fallbackUrl;
+  const staticFileExists = useFileExists(fallbackUrl);
+  const available = fileUrl ? true : staticFileExists;
 
   return (
     <Card sx={{ height: '100%' }}>
@@ -58,7 +69,7 @@ export default function DocumentCard({ title, year, description, icon = <Descrip
           {available ? (
             <Button
               component="a"
-              href={fileUrl}
+              href={targetFileUrl}
               target="_blank"
               rel="noopener noreferrer"
               variant="outlined"
