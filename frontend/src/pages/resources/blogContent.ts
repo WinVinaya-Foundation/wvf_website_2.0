@@ -389,3 +389,15 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 export function getCategoryMeta(key: BlogCategoryKey): BlogCategoryMeta {
   return blogCategories.find((category) => category.key === key) ?? blogCategories[0];
 }
+
+export function getCategoryMuiColor(colorEnum?: string): 'primary' | 'secondary' | 'info' | 'warning' | 'success' | 'error' {
+  if (!colorEnum) return 'primary';
+  const lower = colorEnum.toLowerCase();
+  if (lower === 'secondary') return 'secondary';
+  if (lower === 'info') return 'info';
+  if (lower === 'warning') return 'warning';
+  if (lower === 'success') return 'success';
+  if (lower === 'error') return 'error';
+  return 'primary';
+}
+

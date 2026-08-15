@@ -4,16 +4,19 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Link } from '@tanstack/react-router';
 import { SectionContainer } from '../../../components';
-import type { BlogPost } from '../../../pages/resources/blogContent';
+import type { BlogPostItem } from '../../../store/api/blogApi';
+import { getCategoryMuiColor } from '../../../pages/resources/blogContent';
 import BlogCoverArt from '../blog/BlogCoverArt';
 
 export interface PrevNextNavSectionProps {
-  previousPost?: BlogPost;
-  nextPost?: BlogPost;
+  previousPost?: BlogPostItem;
+  nextPost?: BlogPostItem;
 }
 
-function NavTile({ post, direction }: { post: BlogPost; direction: 'previous' | 'next' }) {
+function NavTile({ post, direction }: { post: BlogPostItem; direction: 'previous' | 'next' }) {
   const isNext = direction === 'next';
+  const color = getCategoryMuiColor(post.category?.color);
+  const categoryLabel = post.category?.label || 'Article';
 
   return (
     <Link to="/resources/blog/$slug" params={{ slug: post.slug }} style={{ textDecoration: 'none', display: 'block' }}>
@@ -37,7 +40,7 @@ function NavTile({ post, direction }: { post: BlogPost; direction: 'previous' | 
         }}
       >
         <Box sx={{ flexShrink: 0, width: 84, height: 64, borderRadius: 3, overflow: 'hidden' }}>
-          <BlogCoverArt category={post.category} height="100%" iconSize={26} />
+          <BlogCoverArt category={categoryLabel} color={color} coverImageUrl={post.coverImageUrl} height="100%" iconSize={26} />
         </Box>
         <Box sx={{ minWidth: 0, flexGrow: 1 }}>
           <Stack direction={isNext ? 'row' : 'row-reverse'} spacing={0.5} sx={{ alignItems: 'center', mb: 0.5 }}>

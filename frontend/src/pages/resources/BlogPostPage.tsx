@@ -1,19 +1,26 @@
 import { useParams } from '@tanstack/react-router';
+import { Box, CircularProgress } from '@mui/material';
 import { NotFoundPage } from '../common';
 import { ArticleBodySection, ArticleHeaderSection, PrevNextNavSection } from '../../sections/resources/blog-post';
-import { blogPosts, getPostBySlug } from './blogContent';
+import { useGetPublicBlogPostBySlugQuery } from '../../store/api/blogApi';
 
 export default function BlogPostPage() {
   const { slug } = useParams({ strict: false });
-  const post = slug ? getPostBySlug(slug) : undefined;
+  const { data, isLoading, isError } = useGetPublicBlogPostBySlugQuery(slug || '', { skip: !slug });
 
-  if (!post) {
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 12 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError || !data?.post) {
     return <NotFoundPage />;
   }
 
-  const index = blogPosts.findIndex((candidate) => candidate.slug === post.slug);
-  const previousPost = blogPosts[index + 1];
-  const nextPost = index > 0 ? blogPosts[index - 1] : undefined;
+  const { post, previousPost, nextPost } = data;
 
   return (
     <>

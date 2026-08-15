@@ -25,6 +25,7 @@ import EventRoundedIcon from '@mui/icons-material/EventRounded';
 import CollectionsRoundedIcon from '@mui/icons-material/CollectionsRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import FormatQuoteRoundedIcon from '@mui/icons-material/FormatQuoteRounded';
+import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
@@ -49,6 +50,7 @@ const navItems: AdminNavItem[] = [
   { label: 'Gallery', to: '/admin/gallery', icon: <CollectionsRoundedIcon /> },
   { label: 'Success Stories', to: '/admin/stories', icon: <AutoAwesomeRoundedIcon /> },
   { label: 'Testimonials', to: '/admin/testimonials', icon: <FormatQuoteRoundedIcon /> },
+  { label: 'Blog Posts', to: '/admin/blog', icon: <ArticleRoundedIcon /> },
 ];
 
 interface AdminLayoutProps {

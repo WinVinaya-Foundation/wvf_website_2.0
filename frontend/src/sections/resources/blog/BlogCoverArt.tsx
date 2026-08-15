@@ -1,23 +1,57 @@
 import { Box } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import type { ResponsiveStyleValue } from '@mui/system';
-import type { BlogCategoryKey } from '../../../pages/resources/blogContent';
-import { getCategoryMeta } from '../../../pages/resources/blogContent';
-import { BLOG_CATEGORY_ICONS } from './blogCategoryVisuals';
+import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
+import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
+import SignLanguageRoundedIcon from '@mui/icons-material/SignLanguageRounded';
+import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
+import AccessibilityNewRoundedIcon from '@mui/icons-material/AccessibilityNewRounded';
 
 export interface BlogCoverArtProps {
-  category: BlogCategoryKey;
+  category?: string;
+  color?: 'primary' | 'secondary' | 'info' | 'warning' | 'success' | 'error';
+  coverImageUrl?: string | null;
   height?: ResponsiveStyleValue<number | string>;
   iconSize?: number;
   borderRadius?: number | string;
 }
 
-/** Abstract, category-colored cover art used for blog cards and the article banner. Real cover
- * photography isn't available yet, so this stands in as an honest, on-brand placeholder rather
- * than a fabricated photo. */
-export default function BlogCoverArt({ category, height = '100%', iconSize = 64, borderRadius = 0 }: BlogCoverArtProps) {
-  const meta = getCategoryMeta(category);
-  const Icon = BLOG_CATEGORY_ICONS[category];
+const CATEGORY_ICONS: Record<string, typeof ArticleRoundedIcon> = {
+  workplace: BusinessCenterRoundedIcon,
+  signLanguage: SignLanguageRoundedIcon,
+  community: GroupsRoundedIcon,
+  accessibility: AccessibilityNewRoundedIcon,
+  'Workplace Inclusion': BusinessCenterRoundedIcon,
+  'Sign Language': SignLanguageRoundedIcon,
+  'Community & Training': GroupsRoundedIcon,
+  Accessibility: AccessibilityNewRoundedIcon,
+};
+
+export default function BlogCoverArt({
+  category = 'general',
+  color = 'primary',
+  coverImageUrl,
+  height = '100%',
+  iconSize = 64,
+  borderRadius = 0,
+}: BlogCoverArtProps) {
+  if (coverImageUrl) {
+    return (
+      <Box
+        component="img"
+        src={coverImageUrl}
+        alt=""
+        sx={{
+          width: '100%',
+          height,
+          objectFit: 'cover',
+          borderRadius,
+        }}
+      />
+    );
+  }
+
+  const Icon = CATEGORY_ICONS[category] || ArticleRoundedIcon;
 
   return (
     <Box
@@ -28,7 +62,7 @@ export default function BlogCoverArt({ category, height = '100%', iconSize = 64,
         width: '100%',
         height,
         borderRadius,
-        background: (theme) => `linear-gradient(135deg, ${theme.palette[meta.color].dark} 0%, ${theme.palette[meta.color].main} 100%)`,
+        background: (theme) => `linear-gradient(135deg, ${theme.palette[color].dark} 0%, ${theme.palette[color].main} 100%)`,
       }}
     >
       <Box
@@ -65,3 +99,4 @@ export default function BlogCoverArt({ category, height = '100%', iconSize = 64,
     </Box>
   );
 }
+

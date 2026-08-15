@@ -125,6 +125,7 @@ model Category {
 
   events        Event[]
   galleryAlbums GalleryAlbum[]
+  blogPosts     BlogPost[]
 }
 
 model Event {
@@ -220,4 +221,26 @@ model Testimonial {
   @@index([category])
   @@index([isActive])
   @@index([sortOrder])
+}
+
+model BlogPost {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  excerpt       String
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  authorName    String
+  authorRole    String
+  publishedAt   DateTime @default(now())
+  body          Json
+  coverImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([publishedAt])
 }

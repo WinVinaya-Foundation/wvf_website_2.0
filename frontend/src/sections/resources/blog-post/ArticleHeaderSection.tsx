@@ -3,20 +3,22 @@ import { alpha } from '@mui/material/styles';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import { Link } from '@tanstack/react-router';
 import { Chip, SectionContainer } from '../../../components';
-import type { BlogPost } from '../../../pages/resources/blogContent';
-import { getCategoryMeta } from '../../../pages/resources/blogContent';
+import type { BlogPostItem } from '../../../store/api/blogApi';
+import { getCategoryMuiColor } from '../../../pages/resources/blogContent';
 import { estimateReadingTime } from '../../../utils/readingTime';
 import BlogCoverArt from '../blog/BlogCoverArt';
 import BlogMeta from '../blog/BlogMeta';
 
 export interface ArticleHeaderSectionProps {
-  post: BlogPost;
+  post: BlogPostItem;
 }
 
 /** Breadcrumb, category, title, meta row, and cover banner at the top of the article page */
 export default function ArticleHeaderSection({ post }: ArticleHeaderSectionProps) {
-  const category = getCategoryMeta(post.category);
+  const color = getCategoryMuiColor(post.category?.color);
+  const categoryLabel = post.category?.label || 'Article';
   const readingMinutes = estimateReadingTime(post.body);
+  const authorName = post.authorName;
 
   return (
     <SectionContainer labelledBy="article-title">
@@ -35,13 +37,13 @@ export default function ArticleHeaderSection({ post }: ArticleHeaderSectionProps
 
         <Stack spacing={2.25} sx={{ maxWidth: 820 }}>
           <Chip
-            label={category.label}
+            label={categoryLabel}
             size="small"
             sx={{
               alignSelf: 'flex-start',
               fontWeight: 700,
-              bgcolor: (theme) => alpha(theme.palette[category.color].main, 0.12),
-              color: `${category.color}.dark`,
+              bgcolor: (theme) => alpha(theme.palette[color].main, 0.12),
+              color: `${color}.dark`,
             }}
           />
 
@@ -53,11 +55,11 @@ export default function ArticleHeaderSection({ post }: ArticleHeaderSectionProps
             {post.title}
           </Typography>
 
-          <BlogMeta publishedAt={post.publishedAt} readingMinutes={readingMinutes} authorName={post.author.name} size="medium" />
+          <BlogMeta publishedAt={post.publishedAt} readingMinutes={readingMinutes} authorName={authorName} size="medium" />
         </Stack>
 
         <Box sx={{ borderRadius: 5, overflow: 'hidden', boxShadow: (theme) => `0 20px 48px -16px ${alpha(theme.palette.grey[900], 0.2)}` }}>
-          <BlogCoverArt category={post.category} height={{ xs: 220, sm: 320, md: 420 }} iconSize={100} />
+          <BlogCoverArt category={categoryLabel} color={color} coverImageUrl={post.coverImageUrl} height={{ xs: 220, sm: 320, md: 420 }} iconSize={100} />
         </Box>
       </Stack>
     </SectionContainer>

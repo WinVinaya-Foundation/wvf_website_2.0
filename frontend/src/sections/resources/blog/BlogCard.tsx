@@ -2,20 +2,22 @@ import { Box, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Link } from '@tanstack/react-router';
 import { Chip } from '../../../components';
-import type { BlogPost } from '../../../pages/resources/blogContent';
-import { getCategoryMeta } from '../../../pages/resources/blogContent';
+import type { BlogPostItem } from '../../../store/api/blogApi';
+import { getCategoryMuiColor } from '../../../pages/resources/blogContent';
 import { estimateReadingTime } from '../../../utils/readingTime';
 import BlogCoverArt from './BlogCoverArt';
 import BlogMeta from './BlogMeta';
 
 export interface BlogCardProps {
-  post: BlogPost;
+  post: BlogPostItem;
 }
 
 /** Blog card used in the grid — cover art, category, title, excerpt, and the date/read-time/author row. */
 export default function BlogCard({ post }: BlogCardProps) {
-  const category = getCategoryMeta(post.category);
+  const color = getCategoryMuiColor(post.category?.color);
+  const categoryLabel = post.category?.label || 'Article';
   const readingMinutes = estimateReadingTime(post.body);
+  const authorName = post.authorName;
 
   return (
     <Link to="/resources/blog/$slug" params={{ slug: post.slug }} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
@@ -33,15 +35,15 @@ export default function BlogCard({ post }: BlogCardProps) {
           transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             transform: 'translateY(-6px)',
-            boxShadow: (theme) => `0 20px 40px -12px ${alpha(theme.palette[category.color].main, 0.28)}`,
-            '& .blog-card-title': { color: `${category.color}.dark` },
+            boxShadow: (theme) => `0 20px 40px -12px ${alpha(theme.palette[color].main, 0.28)}`,
+            '& .blog-card-title': { color: `${color}.dark` },
           },
         }}
       >
         <Box sx={{ position: 'relative', aspectRatio: '16 / 9' }}>
-          <BlogCoverArt category={post.category} height="100%" iconSize={44} />
+          <BlogCoverArt category={categoryLabel} color={color} coverImageUrl={post.coverImageUrl} height="100%" iconSize={44} />
           <Chip
-            label={category.label}
+            label={categoryLabel}
             size="small"
             sx={{
               position: 'absolute',
@@ -49,7 +51,7 @@ export default function BlogCard({ post }: BlogCardProps) {
               left: 14,
               fontWeight: 800,
               bgcolor: (theme) => alpha(theme.palette.common.white, 0.92),
-              color: `${category.color}.dark`,
+              color: `${color}.dark`,
             }}
           />
         </Box>
@@ -93,7 +95,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           </Typography>
 
           <Box sx={{ pt: 2, borderTop: '1px solid', borderColor: (theme) => alpha(theme.palette.divider, 0.8) }}>
-            <BlogMeta publishedAt={post.publishedAt} readingMinutes={readingMinutes} authorName={post.author.name} />
+            <BlogMeta publishedAt={post.publishedAt} readingMinutes={readingMinutes} authorName={authorName} />
           </Box>
         </Box>
       </Box>
