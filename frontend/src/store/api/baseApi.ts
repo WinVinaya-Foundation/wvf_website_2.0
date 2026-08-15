@@ -36,6 +36,6 @@ const axiosBaseQuery = (): BaseQueryFn<AxiosBaseQueryArgs, unknown, ApiError> =>
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery(),
-  tagTypes: ['CurrentUser', 'Donors', 'Reports', 'Events', 'Gallery', 'Categories', 'Stories', 'Testimonials', 'Blogs', 'Newsletters'],
+  tagTypes: ['CurrentUser', 'Donors', 'Reports', 'Events', 'Gallery', 'Categories', 'Stories', 'Testimonials', 'Blogs', 'Newsletters', 'Ebooks'],
   endpoints: () => ({}),
 });

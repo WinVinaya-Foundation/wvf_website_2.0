@@ -265,3 +265,22 @@ model Newsletter {
   @@index([publishedAt])
 }
 
+model Ebook {
+  id            String   @id @default(cuid())
+  title         String
+  author        String
+  publishedAt   DateTime @default(now())
+  description   String
+  fileUrl       String?
+  fileName      String?
+  fileSize      Int?
+  coverImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([publishedAt])
+}
+

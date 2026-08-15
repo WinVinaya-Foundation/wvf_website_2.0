@@ -854,6 +854,106 @@ async function main() {
       console.log(`Updated newsletter: ${item.title} — ${item.issueLabel}`);
     }
   }
+
+  // Seed sample e-books and create sample PDF files
+  const baseEbookUploadsDir = path.join(process.cwd(), 'uploads', 'ebooks');
+  if (!fs.existsSync(baseEbookUploadsDir)) {
+    fs.mkdirSync(baseEbookUploadsDir, { recursive: true });
+  }
+
+  const initialEbooks = [
+    {
+      title: 'The Inclusive Hiring Playbook',
+      author: 'Corporate Engagement Team',
+      publishedAt: new Date('2026-07-01T00:00:00.000Z'),
+      description:
+        'A practical guide for HR teams and hiring managers building a genuinely inclusive recruitment pipeline — from sourcing candidates to structuring interviews to onboarding that actually sticks.',
+      fileName: 'The_Inclusive_Hiring_Playbook.pdf',
+    },
+    {
+      title: 'Getting Started with Indian Sign Language',
+      author: 'Sign Language & Accessibility Team',
+      publishedAt: new Date('2026-05-01T00:00:00.000Z'),
+      description:
+        'An introductory guide to ISL basics, everyday etiquette, and why every workplace — not just ones with Deaf employees — benefits from a few colleagues who can sign.',
+      fileName: 'Getting_Started_with_Indian_Sign_Language.pdf',
+    },
+    {
+      title: 'Web Accessibility for Developers: A Field Guide',
+      author: 'Accessibility Design Team',
+      publishedAt: new Date('2026-03-01T00:00:00.000Z'),
+      description:
+        'Practical, code-level guidance on screen readers, keyboard navigation, and semantic markup — for teams who want to build interfaces that work for everyone on the first pass.',
+      fileName: 'Web_Accessibility_for_Developers.pdf',
+    },
+    {
+      title: "Disability Sensitization: A Facilitator's Handbook",
+      author: 'Training & Sensitization Team',
+      publishedAt: new Date('2026-01-01T00:00:00.000Z'),
+      description:
+        'The exercises, prompts, and facilitation notes behind our in-person sensitization workshops, adapted so any organization can run a first session internally.',
+      fileName: 'Disability_Sensitization_Facilitators_Handbook.pdf',
+    },
+    {
+      title: 'Building CSR Programs That Actually Move the Needle',
+      author: 'Corporate Engagement Team',
+      publishedAt: new Date('2025-11-01T00:00:00.000Z'),
+      description:
+        'How to design a disability-inclusion CSR program that satisfies compliance and creates measurable impact — not just a line item in an annual report.',
+      fileName: 'Building_CSR_Programs.pdf',
+    },
+    {
+      title: 'From Classroom to Career: The WinVinaya Academy Story',
+      author: 'Talent & Placements Team',
+      publishedAt: new Date('2025-09-01T00:00:00.000Z'),
+      description:
+        'A candid look at what makes our training-to-placement model work, told through the outcomes of real cohorts — what changed, what failed first, and what we kept.',
+      fileName: 'From_Classroom_to_Career.pdf',
+    },
+  ];
+
+  for (const eb of initialEbooks) {
+    const filePath = path.join(baseEbookUploadsDir, eb.fileName);
+    if (!fs.existsSync(filePath)) {
+      const samplePdfContent = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kinds [] /Count 1 /Kids [3 0 R] >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 50 >>\nstream\nBT /F1 12 Tf 100 700 TD (${eb.title}) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000206 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n306\n%%EOF`;
+      fs.writeFileSync(filePath, samplePdfContent);
+    }
+
+    const fileUrl = `/uploads/ebooks/${eb.fileName}`;
+    const fileSize = fs.statSync(filePath).size;
+
+    const existing = await prisma.ebook.findFirst({
+      where: { title: eb.title },
+    });
+
+    if (!existing) {
+      await prisma.ebook.create({
+        data: {
+          title: eb.title,
+          author: eb.author,
+          publishedAt: eb.publishedAt,
+          description: eb.description,
+          fileUrl,
+          fileName: eb.fileName,
+          fileSize,
+          isActive: true,
+        },
+      });
+      console.log(`Seeded ebook: ${eb.title}`);
+    } else {
+      await prisma.ebook.update({
+        where: { id: existing.id },
+        data: {
+          author: eb.author,
+          description: eb.description,
+          fileUrl,
+          fileName: eb.fileName,
+          fileSize,
+        },
+      });
+      console.log(`Updated ebook: ${eb.title}`);
+    }
+  }
 }
 
 main()

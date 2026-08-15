@@ -8,4 +8,5 @@ export { default as AdminStoriesPage } from './AdminStoriesPage';
 export { default as AdminTestimonialsPage } from './AdminTestimonialsPage';
 export { default as AdminBlogPage } from './AdminBlogPage';
 export { default as AdminNewslettersPage } from './AdminNewslettersPage';
+export { default as AdminEbooksPage } from './AdminEbooksPage';
 export { default as CategoryQuickAddDialog } from './CategoryQuickAddDialog';
