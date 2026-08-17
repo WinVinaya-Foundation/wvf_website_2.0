@@ -1,6 +1,6 @@
 import type { CtaLink, PersonEntry } from '../../model/content';
 import seethalakshmiImg from '../../assets/team/founders/Seethalakshmi_Kupuraj.png';
-import sivasankarImg from '../../assets/team/founders/Sivasankar.png';
+// import sivasankarImg from '../../assets/team/founders/Sivasankar.png';
 import vijayImg from '../../assets/team/founders/Vijay_Kirpalani.png';
 
 export const teamHero = {
@@ -18,7 +18,7 @@ export const leadership: PersonEntry[] = [
   {
     name: 'Sivasankar Jayagopal',
     role: 'Founder Chairman',
-    photo: sivasankarImg,
+    photo: "../../../assets/team/founders/sivasankar-1.png",
     linkedin: 'https://www.linkedin.com/in/sivasankarjayagopal',
   },
   {
