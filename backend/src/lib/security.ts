@@ -13,9 +13,16 @@ export function sanitizeInput(input: unknown): string {
   });
 }
 
-/** Recursively cleans string properties within a request object (e.g. req.body) to prevent XSS. */
-export function sanitizeObject<T>(data: T): T {
+const SENSITIVE_FIELD_PATTERN = /password|token|secret/i;
+
+/** Recursively cleans string properties within a request object (e.g. req.body) to prevent XSS.
+ * Skips sensitive credential fields (passwords, secrets) to preserve special characters like &, <, >. */
+export function sanitizeObject<T>(data: T, keyName?: string): T {
   if (data === null || data === undefined) {
+    return data;
+  }
+
+  if (keyName && SENSITIVE_FIELD_PATTERN.test(keyName)) {
     return data;
   }
 
@@ -24,13 +31,13 @@ export function sanitizeObject<T>(data: T): T {
   }
 
   if (Array.isArray(data)) {
-    return data.map((item) => sanitizeObject(item)) as unknown as T;
+    return data.map((item) => sanitizeObject(item, keyName)) as unknown as T;
   }
 
   if (typeof data === 'object' && !(data instanceof Date) && !(data instanceof Buffer)) {
     const cleaned: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
-      cleaned[key] = sanitizeObject(value);
+      cleaned[key] = sanitizeObject(value, key);
     }
     return cleaned as T;
   }
