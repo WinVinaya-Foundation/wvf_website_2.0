@@ -35,6 +35,9 @@ import { globalLimiter, formSubmissionLimiter, loginLimiter } from './middleware
 
 export const app = express();
 
+// Trust reverse proxy (Nginx) for accurate IP detection in rate limiters
+app.set('trust proxy', 1);
+
 // Advanced Cyber Security Headers (Helmet)
 app.use(
   helmet({
