@@ -12,9 +12,9 @@ export const heroContent = {
 };
 
 export const impactCounters = [
-  { label: 'Trained', value: 4500, suffix: '+' },
-  { label: 'Placed', value: 3200, suffix: '+' },
-  { label: 'Job-ready candidates', value: 85, suffix: '%' },
+  { label: 'Trained', value: 1640, suffix: '+' },
+  { label: 'Placed', value: 725, suffix: '+' },
+  { label: 'Job-ready candidates', value: 550, suffix: '' },
 ];
 
 export const primaryCtaBanner = {
