@@ -1,6 +1,6 @@
 import type { CtaLink, PersonEntry } from '../../model/content';
 import seethalakshmiImg from '../../assets/team/founders/Seethalakshmi_Kupuraj.png';
-import sivasankarImg from '../../assets/team/founders/Sivasankar_Jayagopal.png';
+import sivasankarImg from '../../assets/team/founders/Sivasankar.png';
 import vijayImg from '../../assets/team/founders/Vijay_Kirpalani.png';
 
 export const teamHero = {
