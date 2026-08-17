@@ -74,10 +74,19 @@ function generateSeoFiles() {
       fs.mkdirSync(outDir, { recursive: true });
     }
 
-    // Write sitemap.xml to both public/ (source repository) and dist/ (build output)
-    fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap);
+    // Write sitemap.xml to dist/ (build output) and public/ (source repository)
+    try {
+      fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap);
+    } catch (err) {
+      console.warn('[SEO Plugin] Note: Could not write sitemap.xml to dist directory:', (err as Error).message);
+    }
+
     if (fs.existsSync(publicDir)) {
-      fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+      try {
+        fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+      } catch (err) {
+        console.warn('[SEO Plugin] Note: Could not write sitemap.xml to public directory:', (err as Error).message);
+      }
     }
 
     // Generate robots.txt content
@@ -88,10 +97,18 @@ Allow: /
 Sitemap: ${domain}/sitemap.xml
 `;
     
-    // Write robots.txt to both public/ (source repository) and dist/ (build output)
-    fs.writeFileSync(path.join(outDir, 'robots.txt'), robots);
+    try {
+      fs.writeFileSync(path.join(outDir, 'robots.txt'), robots);
+    } catch (err) {
+      console.warn('[SEO Plugin] Note: Could not write robots.txt to dist directory:', (err as Error).message);
+    }
+
     if (fs.existsSync(publicDir)) {
-      fs.writeFileSync(path.join(publicDir, 'robots.txt'), robots);
+      try {
+        fs.writeFileSync(path.join(publicDir, 'robots.txt'), robots);
+      } catch (err) {
+        console.warn('[SEO Plugin] Note: Could not write robots.txt to public directory:', (err as Error).message);
+      }
     }
 
     console.log(`[SEO Plugin] Auto-generated sitemap.xml and robots.txt with ${paths.length} URLs successfully.`);
