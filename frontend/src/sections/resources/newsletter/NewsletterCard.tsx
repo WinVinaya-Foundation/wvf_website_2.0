@@ -6,23 +6,25 @@ import { Chip } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
 import { formatDate } from '../../../utils/date';
-import type { NewsletterIssue } from '../../../pages/resources/newsletterContent';
+import type { NewsletterItem } from '../../../store/api/newsletterApi';
 import NewsletterCoverArt, { type NewsletterAccent } from './NewsletterCoverArt';
 
 const ACCENTS: NewsletterAccent[] = ['secondary', 'primary', 'info'];
 
 export interface NewsletterCardProps {
-  issue: NewsletterIssue;
+  issue: NewsletterItem;
   index: number;
 }
 
 /** Newsletter card — cover art, title, description, and published date. Opens the issue PDF in a
- * new tab once it exists at its predictable path; otherwise shows an honest "Coming soon" state
- * instead of a link that would 404. */
+ * new tab once it exists; otherwise shows a "Coming soon" state. */
 export default function NewsletterCard({ issue, index }: NewsletterCardProps) {
   const accent = ACCENTS[index % ACCENTS.length];
-  const fileUrl = documentFileUrl(issue.title, issue.issueLabel);
-  const available = useFileExists(fileUrl);
+  const fallbackUrl = documentFileUrl(issue.title, issue.issueLabel);
+  const isFallbackAvailable = useFileExists(fallbackUrl);
+
+  const fileUrl = issue.fileUrl || (isFallbackAvailable ? fallbackUrl : null);
+  const available = Boolean(fileUrl);
 
   const card = (
     <Box
@@ -46,8 +48,17 @@ export default function NewsletterCard({ issue, index }: NewsletterCardProps) {
         }),
       }}
     >
-      <Box sx={{ aspectRatio: '16 / 9' }}>
-        <NewsletterCoverArt accent={accent} issueLabel={issue.issueLabel} height="100%" iconSize={40} />
+      <Box sx={{ aspectRatio: '16 / 9', overflow: 'hidden', position: 'relative' }}>
+        {issue.coverImageUrl ? (
+          <Box
+            component="img"
+            src={issue.coverImageUrl}
+            alt={`${issue.title} ${issue.issueLabel}`}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <NewsletterCoverArt accent={accent} issueLabel={issue.issueLabel} height="100%" iconSize={40} />
+        )}
       </Box>
 
       <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
@@ -94,7 +105,7 @@ export default function NewsletterCard({ issue, index }: NewsletterCardProps) {
     </Box>
   );
 
-  if (!available) {
+  if (!available || !fileUrl) {
     return (
       <Box aria-label={`${issue.title} ${issue.issueLabel} — PDF coming soon`} sx={{ cursor: 'default', height: '100%' }}>
         {card}

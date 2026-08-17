@@ -11,6 +11,11 @@ import {
   AdminReportsPage,
   AdminStoriesPage,
   AdminTestimonialsPage,
+  AdminBlogPage,
+  AdminNewslettersPage,
+  AdminEbooksPage,
+  AdminCareersPage,
+  AdminContactPage,
   BlogPage,
   BlogPostPage,
   CareersPage,
@@ -210,6 +215,61 @@ const adminTestimonialsRoute = createRoute({
   component: AdminTestimonialsPage,
 });
 
+const adminBlogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/blog',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminBlogPage,
+});
+
+const adminNewslettersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/newsletters',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminNewslettersPage,
+});
+
+const adminEbooksRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/ebooks',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminEbooksPage,
+});
+
+const adminCareersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/careers',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminCareersPage,
+});
+
+const adminContactRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/contact',
+  beforeLoad: () => {
+    if (!hasAdminSession()) {
+      throw redirect({ to: '/admin/login' });
+    }
+  },
+  component: AdminContactPage,
+});
+
 // Send bare /admin to whichever admin destination is appropriate instead of 404ing.
 const adminIndexRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -270,6 +330,11 @@ const routeTree = rootRoute.addChildren([
   adminGalleryRoute,
   adminStoriesRoute,
   adminTestimonialsRoute,
+  adminBlogRoute,
+  adminNewslettersRoute,
+  adminEbooksRoute,
+  adminCareersRoute,
+  adminContactRoute,
   adminIndexRoute,
   ...placeholderRoutes,
 ]);

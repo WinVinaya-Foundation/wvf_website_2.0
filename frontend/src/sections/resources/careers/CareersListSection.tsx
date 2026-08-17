@@ -3,17 +3,21 @@ import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import WorkOffRoundedIcon from '@mui/icons-material/WorkOffRounded';
 import { SectionContainer, SectionHeading } from '../../../components';
-import { jobOpenings } from '../../../pages/resources/careersContent';
+import type { JobItem } from '../../../store/api/careersApi';
 import JobCard from './JobCard';
 
 type StatusFilter = 'active' | 'closed';
 
+export interface CareersListSectionProps {
+  jobs: JobItem[];
+}
+
 /** Job openings list — an Active / Closed tab switch above a stack of job cards. */
-export default function CareersListSection() {
+export default function CareersListSection({ jobs }: CareersListSectionProps) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('active');
 
-  const activeJobs = jobOpenings.filter((job) => job.status === 'active');
-  const closedJobs = jobOpenings.filter((job) => job.status === 'closed');
+  const activeJobs = jobs.filter((job) => job.isActive);
+  const closedJobs = jobs.filter((job) => !job.isActive);
   const visibleJobs = statusFilter === 'active' ? activeJobs : closedJobs;
 
   return (

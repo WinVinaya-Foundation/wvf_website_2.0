@@ -4,25 +4,27 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Chip } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
-import type { Ebook } from '../../../pages/resources/ebookContent';
+import type { EbookItem } from '../../../store/api/ebookApi';
 import EbookCoverArt, { type EbookAccent } from './EbookCoverArt';
 import EbookMeta from './EbookMeta';
 
 const ACCENTS: EbookAccent[] = ['secondary', 'primary', 'info'];
 
 export interface EbookCardProps {
-  ebook: Ebook;
+  ebook: EbookItem;
   index: number;
 }
 
 /** eBook card — cover art, title, description, and the author/date row. Opens the eBook PDF in a
- * new tab once it exists at its predictable path; otherwise shows an honest "Coming soon" state
- * instead of a link that would 404. */
+ * new tab once it exists; otherwise shows a "Coming soon" state. */
 export default function EbookCard({ ebook, index }: EbookCardProps) {
   const accent = ACCENTS[index % ACCENTS.length];
   const year = ebook.publishedAt.slice(0, 4);
-  const fileUrl = documentFileUrl(ebook.title, year);
-  const available = useFileExists(fileUrl);
+  const fallbackUrl = documentFileUrl(ebook.title, year);
+  const isFallbackAvailable = useFileExists(fallbackUrl);
+
+  const fileUrl = ebook.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const available = Boolean(fileUrl);
 
   const card = (
     <Box
@@ -46,8 +48,17 @@ export default function EbookCard({ ebook, index }: EbookCardProps) {
         }),
       }}
     >
-      <Box sx={{ aspectRatio: '16 / 9' }}>
-        <EbookCoverArt accent={accent} year={year} height="100%" iconSize={40} />
+      <Box sx={{ aspectRatio: '16 / 9', overflow: 'hidden', position: 'relative' }}>
+        {ebook.coverImageUrl ? (
+          <Box
+            component="img"
+            src={ebook.coverImageUrl}
+            alt={ebook.title}
+            sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <EbookCoverArt accent={accent} year={year} height="100%" iconSize={40} />
+        )}
       </Box>
 
       <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>

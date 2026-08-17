@@ -125,6 +125,7 @@ model Category {
 
   events        Event[]
   galleryAlbums GalleryAlbum[]
+  blogPosts     BlogPost[]
 }
 
 model Event {
@@ -221,3 +222,117 @@ model Testimonial {
   @@index([isActive])
   @@index([sortOrder])
 }
+
+model BlogPost {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  excerpt       String
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  authorName    String
+  authorRole    String
+  publishedAt   DateTime @default(now())
+  body          Json
+  coverImageUrl String?
+  bannerImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([publishedAt])
+}
+
+model Newsletter {
+  id            String   @id @default(cuid())
+  title         String
+  issueLabel    String
+  publishedAt   DateTime @default(now())
+  description   String
+  fileUrl       String?
+  fileName      String?
+  fileSize      Int?
+  coverImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([publishedAt])
+}
+
+model Ebook {
+  id            String   @id @default(cuid())
+  title         String
+  author        String
+  publishedAt   DateTime @default(now())
+  description   String
+  fileUrl       String?
+  fileName      String?
+  fileSize      Int?
+  coverImageUrl String?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([publishedAt])
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+model JobOpening {
+  id             String         @id @default(cuid())
+  title          String
+  department     String?
+  employmentType EmploymentType @default(FULL_TIME)
+  location       String
+  experience     String
+  description    String
+  requirements   String?
+  fileUrl        String?
+  fileName       String?
+  fileSize       Int?
+  isActive       Boolean        @default(true)
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+model ContactInquiry {
+  id         String        @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  reason     String
+  message    String
+  status     InquiryStatus @default(NEW)
+  adminNotes String?
+
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+

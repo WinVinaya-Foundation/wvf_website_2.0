@@ -9,6 +9,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import { Button, SectionContainer, SectionHeading, TextField } from '../../components';
 import { contactReasons, mapEmbedSrc } from '../../pages/contact/contactContent';
+import { useSubmitContactFormMutation } from '../../store/api/contactApi';
 
 const contactFormSchema = z.object({
   name: z.string().trim().min(2, 'Please enter your full name'),
@@ -25,6 +26,8 @@ const defaultValues: ContactFormValues = { name: '', email: '', reason: '', mess
  * side by side rather than stacked, letting a visitor pick whichever path they'd rather take. */
 export default function ContactFormMapSection() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitContactForm] = useSubmitContactFormMutation();
+
   const {
     control,
     handleSubmit,
@@ -35,11 +38,13 @@ export default function ContactFormMapSection() {
     defaultValues,
   });
 
-  const onSubmit = async () => {
-    // No backend endpoint exists yet for this form — simulate the round trip so the UX (loading,
-    // then a confirmation state) is real, and swap in a real submit call once one exists.
-    await new Promise((resolve) => setTimeout(resolve, 900));
-    setSubmitted(true);
+  const onSubmit = async (values: ContactFormValues) => {
+    try {
+      await submitContactForm(values).unwrap();
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Failed to submit contact form:', err);
+    }
   };
 
   const handleSendAnother = () => {

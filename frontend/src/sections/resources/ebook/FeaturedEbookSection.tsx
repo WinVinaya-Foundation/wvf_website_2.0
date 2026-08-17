@@ -5,19 +5,25 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Button, Chip, SectionContainer } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
-import { ebooks } from '../../../pages/resources/ebookContent';
+import type { EbookItem } from '../../../store/api/ebookApi';
 import EbookCoverArt from './EbookCoverArt';
 import EbookMeta from './EbookMeta';
 
+export interface FeaturedEbookSectionProps {
+  latestEbook?: EbookItem;
+}
+
 /** Spotlights the most recently published eBook — cover art on one side, title, description,
  * author/date, and a "Read eBook" action on the other. */
-export default function FeaturedEbookSection() {
-  const [latestEbook] = ebooks;
+export default function FeaturedEbookSection({ latestEbook }: FeaturedEbookSectionProps) {
   const year = latestEbook ? latestEbook.publishedAt.slice(0, 4) : '';
-  const fileUrl = latestEbook ? documentFileUrl(latestEbook.title, year) : '';
-  const available = useFileExists(fileUrl);
+  const fallbackUrl = latestEbook ? documentFileUrl(latestEbook.title, year) : '';
+  const isFallbackAvailable = useFileExists(fallbackUrl);
 
   if (!latestEbook) return null;
+
+  const fileUrl = latestEbook.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const available = Boolean(fileUrl);
 
   return (
     <SectionContainer labelledBy="featured-ebook-heading">
@@ -32,7 +38,16 @@ export default function FeaturedEbookSection() {
           boxShadow: (theme) => `0 20px 48px -16px ${alpha(theme.palette.grey[900], 0.16)}`,
         }}
       >
-        <EbookCoverArt accent="secondary" year={year} height={{ xs: 220, md: '100%' }} iconSize={72} />
+        {latestEbook.coverImageUrl ? (
+          <Box
+            component="img"
+            src={latestEbook.coverImageUrl}
+            alt={latestEbook.title}
+            sx={{ width: '100%', height: { xs: 220, md: '100%' }, objectFit: 'cover', minHeight: 280 }}
+          />
+        ) : (
+          <EbookCoverArt accent="secondary" year={year} height={{ xs: 220, md: '100%' }} iconSize={72} />
+        )}
 
         <Box sx={{ p: { xs: 3.5, sm: 5, md: 6 }, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <Stack spacing={2.5}>

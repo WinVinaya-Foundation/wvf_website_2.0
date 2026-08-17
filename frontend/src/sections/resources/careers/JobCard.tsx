@@ -7,20 +7,22 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Chip } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
-import type { JobOpening } from '../../../pages/resources/careersContent';
+import type { JobItem } from '../../../store/api/careersApi';
 
 export interface JobCardProps {
-  job: JobOpening;
+  job: JobItem;
 }
 
 /** A single job opening row — title, status, and key details, opening the job description PDF in
- * a new tab once it exists at its predictable path; otherwise shows an honest "Coming soon" state
- * instead of a link that would 404. Closed roles stay visible (for transparency) but read-only
+ * a new tab once it exists. Closed roles stay visible (for transparency) but read-only
  * unless a PDF genuinely exists for them too. */
 export default function JobCard({ job }: JobCardProps) {
-  const isActive = job.status === 'active';
-  const fileUrl = documentFileUrl(job.title);
-  const available = useFileExists(fileUrl);
+  const isActive = job.isActive;
+  const fallbackUrl = documentFileUrl(job.title);
+  const isFallbackAvailable = useFileExists(fallbackUrl);
+
+  const fileUrl = job.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const available = Boolean(fileUrl);
   const clickable = available;
 
   const content = (
