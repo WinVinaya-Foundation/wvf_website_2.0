@@ -68,7 +68,7 @@ Execute the SQL commands below (replace `YOUR_SECURE_DB_PASSWORD` with a strong 
 
 ```sql
 -- Create database user
-CREATE USER wvfuser WITH PASSWORD 'YOUR_SECURE_DB_PASSWORD';
+CREATE USER wvfuser WITH PASSWORD 'winvinayamoonlightfoundation';
 
 -- Create database
 CREATE DATABASE wvfwebsite OWNER wvfuser;
@@ -89,14 +89,14 @@ GRANT ALL ON SCHEMA public TO wvfuser;
 ### Step 3.1: Create Web Directory
 
 ```bash
-sudo mkdir -p /var/www/wvf_website
-sudo chown -R $USER:$USER /var/www/wvf_website
+sudo mkdir -p /var/www/wvf_website_2.0
+sudo chown -R $USER:$USER /var/www/wvf_website_2.0
 ```
 
 ### Step 3.2: Clone Project Repository
 
 ```bash
-cd /var/www/wvf_website
+cd /var/www/wvf_website_2.0
 git clone https://github.com/WinVinaya-Foundation/wvf_website_2.0.git .
 ```
 
@@ -107,7 +107,7 @@ git clone https://github.com/WinVinaya-Foundation/wvf_website_2.0.git .
 ### Step 4.1: Install Backend Dependencies
 
 ```bash
-cd /var/www/wvf_website/backend
+cd /var/www/wvf_website_2.0/backend
 npm ci
 ```
 
