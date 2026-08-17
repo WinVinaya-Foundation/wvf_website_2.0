@@ -176,7 +176,7 @@ curl http://localhost:4000/api/health # Output: {"status":"ok"}
 ### Step 5.1: Create Frontend `.env` File
 
 ```bash
-cd /var/www/wvf_website/frontend
+cd /var/www/wvf_website_2.0/frontend
 nano .env
 ```
 
@@ -198,8 +198,8 @@ npm run build
 ### Step 5.3: Set Static Asset Permissions for Nginx
 
 ```bash
-sudo chown -R www-data:www-data /var/www/wvf_website/frontend/dist
-sudo chmod -R 755 /var/www/wvf_website/frontend/dist
+sudo chown -R www-data:www-data /var/www/wvf_website_2.0/frontend/dist
+sudo chmod -R 755 /var/www/wvf_website_2.0/frontend/dist
 ```
 
 ---
@@ -215,7 +215,7 @@ sudo apt install -y nginx certbot python3-certbot-nginx
 ### Step 6.2: Copy Nginx Master & Site Configurations
 
 ```bash
-cd /var/www/wvf_website
+cd /var/www/wvf_website_2.0
 
 # Copy master Nginx config
 sudo cp nginx/nginx.conf /etc/nginx/nginx.conf
