@@ -4,6 +4,7 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Chip } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
+import { resolveUploadUrl } from '../../../utils/uploads';
 import type { EbookItem } from '../../../store/api/ebookApi';
 import EbookCoverArt, { type EbookAccent } from './EbookCoverArt';
 import EbookMeta from './EbookMeta';
@@ -23,7 +24,7 @@ export default function EbookCard({ ebook, index }: EbookCardProps) {
   const fallbackUrl = documentFileUrl(ebook.title, year);
   const isFallbackAvailable = useFileExists(fallbackUrl);
 
-  const fileUrl = ebook.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const fileUrl = ebook.fileUrl ? resolveUploadUrl(ebook.fileUrl) : (isFallbackAvailable ? fallbackUrl : undefined);
   const available = Boolean(fileUrl);
 
   const card = (
@@ -52,7 +53,7 @@ export default function EbookCard({ ebook, index }: EbookCardProps) {
         {ebook.coverImageUrl ? (
           <Box
             component="img"
-            src={ebook.coverImageUrl}
+            src={resolveUploadUrl(ebook.coverImageUrl)}
             alt={ebook.title}
             sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

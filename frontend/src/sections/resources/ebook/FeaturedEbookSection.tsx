@@ -5,6 +5,7 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Button, Chip, SectionContainer } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
+import { resolveUploadUrl } from '../../../utils/uploads';
 import type { EbookItem } from '../../../store/api/ebookApi';
 import EbookCoverArt from './EbookCoverArt';
 import EbookMeta from './EbookMeta';
@@ -22,7 +23,7 @@ export default function FeaturedEbookSection({ latestEbook }: FeaturedEbookSecti
 
   if (!latestEbook) return null;
 
-  const fileUrl = latestEbook.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const fileUrl = latestEbook.fileUrl ? resolveUploadUrl(latestEbook.fileUrl) : (isFallbackAvailable ? fallbackUrl : undefined);
   const available = Boolean(fileUrl);
 
   return (
@@ -41,7 +42,7 @@ export default function FeaturedEbookSection({ latestEbook }: FeaturedEbookSecti
         {latestEbook.coverImageUrl ? (
           <Box
             component="img"
-            src={latestEbook.coverImageUrl}
+            src={resolveUploadUrl(latestEbook.coverImageUrl)}
             alt={latestEbook.title}
             sx={{ width: '100%', height: { xs: 220, md: '100%' }, objectFit: 'cover', minHeight: 280 }}
           />

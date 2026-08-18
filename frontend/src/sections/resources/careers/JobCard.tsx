@@ -7,6 +7,7 @@ import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { Chip } from '../../../components';
 import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
+import { resolveUploadUrl } from '../../../utils/uploads';
 import type { JobItem } from '../../../store/api/careersApi';
 
 export interface JobCardProps {
@@ -21,7 +22,7 @@ export default function JobCard({ job }: JobCardProps) {
   const fallbackUrl = documentFileUrl(job.title);
   const isFallbackAvailable = useFileExists(fallbackUrl);
 
-  const fileUrl = job.fileUrl || (isFallbackAvailable ? fallbackUrl : undefined);
+  const fileUrl = job.fileUrl ? resolveUploadUrl(job.fileUrl) : (isFallbackAvailable ? fallbackUrl : undefined);
   const available = Boolean(fileUrl);
   const clickable = available;
 

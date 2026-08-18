@@ -9,6 +9,8 @@ import { formatDate } from '../../../utils/date';
 import type { NewsletterItem } from '../../../store/api/newsletterApi';
 import NewsletterCoverArt, { type NewsletterAccent } from './NewsletterCoverArt';
 
+import { resolveUploadUrl } from '../../../utils/uploads';
+
 const ACCENTS: NewsletterAccent[] = ['secondary', 'primary', 'info'];
 
 export interface NewsletterCardProps {
@@ -23,7 +25,7 @@ export default function NewsletterCard({ issue, index }: NewsletterCardProps) {
   const fallbackUrl = documentFileUrl(issue.title, issue.issueLabel);
   const isFallbackAvailable = useFileExists(fallbackUrl);
 
-  const fileUrl = issue.fileUrl || (isFallbackAvailable ? fallbackUrl : null);
+  const fileUrl = issue.fileUrl ? resolveUploadUrl(issue.fileUrl) : (isFallbackAvailable ? fallbackUrl : null);
   const available = Boolean(fileUrl);
 
   const card = (
@@ -52,7 +54,7 @@ export default function NewsletterCard({ issue, index }: NewsletterCardProps) {
         {issue.coverImageUrl ? (
           <Box
             component="img"
-            src={issue.coverImageUrl}
+            src={resolveUploadUrl(issue.coverImageUrl)}
             alt={`${issue.title} ${issue.issueLabel}`}
             sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

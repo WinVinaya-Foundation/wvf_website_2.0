@@ -18,6 +18,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { resolveUploadUrl } from '../../utils/uploads';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -201,7 +202,7 @@ export default function AdminEbooksPage() {
         item.fileUrl ? (
           <Button
             component="a"
-            href={item.fileUrl}
+            href={resolveUploadUrl(item.fileUrl)}
             target="_blank"
             rel="noopener noreferrer"
             size="small"

@@ -27,6 +27,8 @@ const CATEGORY_ICONS: Record<string, typeof ArticleRoundedIcon> = {
   Accessibility: AccessibilityNewRoundedIcon,
 };
 
+import { resolveUploadUrl } from '../../../utils/uploads';
+
 export default function BlogCoverArt({
   category = 'general',
   color = 'primary',
@@ -39,7 +41,7 @@ export default function BlogCoverArt({
     return (
       <Box
         component="img"
-        src={coverImageUrl}
+        src={resolveUploadUrl(coverImageUrl)}
         alt=""
         sx={{
           width: '100%',

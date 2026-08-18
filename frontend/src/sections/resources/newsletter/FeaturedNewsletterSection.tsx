@@ -8,6 +8,7 @@ import { useFileExists } from '../../../hooks/useFileExists';
 import { documentFileUrl } from '../../../utils/document';
 import { formatDate } from '../../../utils/date';
 import type { NewsletterItem } from '../../../store/api/newsletterApi';
+import { resolveUploadUrl } from '../../../utils/uploads';
 import NewsletterCoverArt from './NewsletterCoverArt';
 
 export interface FeaturedNewsletterSectionProps {
@@ -22,7 +23,7 @@ export default function FeaturedNewsletterSection({ latestIssue }: FeaturedNewsl
 
   if (!latestIssue) return null;
 
-  const fileUrl = latestIssue.fileUrl || (isFallbackAvailable ? fallbackUrl : null);
+  const fileUrl = latestIssue.fileUrl ? resolveUploadUrl(latestIssue.fileUrl) : (isFallbackAvailable ? fallbackUrl : null);
   const available = Boolean(fileUrl);
 
   return (
@@ -41,7 +42,7 @@ export default function FeaturedNewsletterSection({ latestIssue }: FeaturedNewsl
         {latestIssue.coverImageUrl ? (
           <Box
             component="img"
-            src={latestIssue.coverImageUrl}
+            src={resolveUploadUrl(latestIssue.coverImageUrl)}
             alt={`${latestIssue.title} ${latestIssue.issueLabel}`}
             sx={{ width: '100%', height: { xs: 220, md: '100%' }, objectFit: 'cover', minHeight: 280 }}
           />
