@@ -44,7 +44,7 @@ export const employees: PersonEntry[] = [
   'Dharanidaran',
   'Arun kumar',
   'Ann Jannet',
-  'Saravanan',
+  'Saravana',
   'Rahul',
   'Solai Raj',
   'Magam Suresh',

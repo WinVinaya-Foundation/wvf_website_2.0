@@ -44,8 +44,8 @@ export const valueWeBringContent = {
       icon: 'work' as const,
     },
     {
-      title: '85% Measurable Career Impact',
-      description: 'Over 4,500+ scholars trained and 3,200+ placed in dignified, high-growth careers across India.',
+      title: '725+ Measurable Career Impact',
+      description: 'Over 1640+ scholars trained and 725+ placed in dignified, high-growth careers across India.',
       icon: 'trending' as const,
     },
   ],
@@ -184,8 +184,8 @@ export const proofItWorks = {
   ],
   link: { label: 'See more success stories', to: '/impact/success-stories' } satisfies CtaLink,
   stats: [
-    { label: 'Placement rate', value: '85%' },
-    { label: 'Hired across', value: '60+ companies' },
+    { label: 'Placements', value: '725+' },
+    { label: 'Hired across', value: '100+ companies' },
     { label: 'Average time to placement', value: '3 months' },
   ],
 };
@@ -215,7 +215,7 @@ export const hiringPartners: PartnerCompany[] = [
 
 export const partnersContent = {
   headline: 'Trusted by employers who hire for ability.',
-  body: 'Leading companies across IT, BFSI, Hospitality, and Enterprise sectors hire WinVinaya-trained talent.',
+  body: 'Leading companies across IT, BFSI, FinTech, MgfTech, Hospitality, and Enterprise sectors hire WinVinaya-trained talent.',
   partners: hiringPartners,
   link: { label: 'Become a Hiring Partner', to: '/involve/corporate-engagement' } satisfies CtaLink,
 };

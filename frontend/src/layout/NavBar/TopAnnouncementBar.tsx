@@ -14,7 +14,7 @@ const announcementPulse = keyframes`
 const ANNOUNCEMENTS = [
   '🎓 Free Skilling in Full Stack Dev, RPA, Data Viz & Testing with ISL Support',
   '🤝 Samarth MSME Initiative — Enabling Inclusive Workplace Hiring Across India',
-  '🏆 4,500+ Scholars Trained & 3,200+ Candidates Placed with 60+ Corporate Partners',
+  '🏆 1640+ Scholars Trained & 725+ Candidates Placed with 100+ Corporate Partners',
   '📖 WinVinaya Academy — Free Self-Paced E-Learning & 1-on-1 Industry Mentorship',
 ];
 

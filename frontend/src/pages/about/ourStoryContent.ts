@@ -21,7 +21,7 @@ export const ourPhilosophy = {
 };
 
 export const milestones: TimelineItem[] = [
-  { year: 'Today', label: '4,500+ trained, 3,200+ placed across 60+ companies', icon: 'trending' },
+  { year: 'Today', label: '1640+ trained, 725+ placed across 100+ companies', icon: 'trending' },
   { year: '2023', label: 'ATF Award for Best Assistive Technology Initiative among NGOs', icon: 'award' },
   { year: 'TBD', label: 'Recognized as a Great Place to Work', icon: 'premium', isPlaceholder: true },
   { year: 'TBD', label: 'Samarth MSME Initiative launched', icon: 'handshake', isPlaceholder: true },

@@ -227,7 +227,7 @@ export default function ValueWeBringSection() {
             </Box>
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary', lineHeight: 1.1 }}>
-                4,500+ Scholars
+                1640+ Scholars
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                 Trained in High-Demand Tech
@@ -269,10 +269,10 @@ export default function ValueWeBringSection() {
             </Box>
             <Box>
               <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary', lineHeight: 1.1 }}>
-                85% Placement Rate
+                725+ Placements
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
-                Across 60+ Hiring Partners
+                Across 100+ Hiring Partners
               </Typography>
             </Box>
           </Box>

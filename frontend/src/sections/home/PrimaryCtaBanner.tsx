@@ -53,8 +53,8 @@ const actionCards = [
 
 const trustHighlights = [
   'Registered 12A & 80G Non-Profit',
-  '4,500+ Trainees Empowered',
-  '85% Job Placement Rate',
+  '1640+ Trainees Empowered',
+  '725+ Placements',
 ];
 
 export default function PrimaryCtaBanner() {
