@@ -7,7 +7,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, CardContent, TextField } from '../../components';
 import { useLoginMutation } from '../../store/api/authApi';
 import type { ApiError } from '../../store/api/baseApi';
-import logo from '../../assets/logo/winvinaya_foundation.png';
+import logo from '../../assets/logo/winvinaya_foundation.svg';
 
 const loginFormSchema = z.object({
   identifier: z.string().trim().min(1, 'Enter your username or email'),

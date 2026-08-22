@@ -5,7 +5,7 @@ import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import VolunteerActivismRoundedIcon from '@mui/icons-material/VolunteerActivismRounded';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Button } from '../../components';
-import logo from '../../assets/logo/winvinaya_foundation.png';
+import logo from '../../assets/logo/winvinaya_foundation.svg';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
 import NavDropdown from './NavDropdown';
 import MobileDrawer from './MobileDrawer';

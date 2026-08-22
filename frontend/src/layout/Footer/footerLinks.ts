@@ -46,10 +46,11 @@ export interface SocialLink {
 }
 
 export const socialLinks: SocialLink[] = [
-  { label: 'Facebook', href: '#' },
-  { label: 'Instagram', href: '#' },
-  { label: 'LinkedIn', href: '#' },
-  { label: 'YouTube', href: '#' },
+  { label: 'Facebook', href: 'https://www.facebook.com/WinVinayaFoundation' },
+  { label: 'Instagram', href: 'https://www.instagram.com/winvinayafoundation/' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/winvinaya-foundation' },
+  { label: 'YouTube', href: 'https://www.youtube.com/@WinVinayaFoundation' },
+  { label: 'Twitter/X', href: 'https://x.com/WinvinayaF' }
 ];
 
 export const legalLinks: FooterLink[] = [

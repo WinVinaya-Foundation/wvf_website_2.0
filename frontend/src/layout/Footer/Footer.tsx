@@ -4,6 +4,7 @@ import Facebook from '@mui/icons-material/Facebook';
 import Instagram from '@mui/icons-material/Instagram';
 import LinkedIn from '@mui/icons-material/LinkedIn';
 import YouTube from '@mui/icons-material/YouTube';
+import Twitter from '@mui/icons-material/Twitter';
 import { Link } from '@tanstack/react-router';
 import logoMark from '../../assets/logo/winvinaya_mark.png';
 import { footerColumns, legalLinks, socialLinks } from './footerLinks';
@@ -13,6 +14,7 @@ const SOCIAL_ICONS: Record<string, typeof Facebook> = {
   Instagram,
   LinkedIn,
   YouTube,
+  'Twitter/X': Twitter,
 };
 
 export default function Footer() {
@@ -39,6 +41,7 @@ export default function Footer() {
             <Stack direction="row" spacing={1}>
               {socialLinks.map((social) => {
                 const Icon = SOCIAL_ICONS[social.label];
+                if (!Icon) return null;
                 return (
                   <IconButton
                     key={social.label}

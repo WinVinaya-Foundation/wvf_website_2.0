@@ -19,7 +19,7 @@ export default function TeamMembersSection() {
       </Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: GRID_COLUMNS, gap: 2.5, mb: { xs: 5, md: 7 } }}>
         {employees.map((person) => (
-          <PersonCard key={person.name} name={person.name} size="md" />
+          <PersonCard key={person.name} name={person.name} role={person.role} photo={person.photo} linkedin={person.linkedin} size="md" />
         ))}
       </Box>
 

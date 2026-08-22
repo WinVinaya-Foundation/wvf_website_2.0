@@ -24,14 +24,14 @@ export default function AlumniSection() {
           gap: 1.25,
         }}
       >
-        {alumni.map((name) => (
-          <Box component="li" key={name}>
+        {alumni.map((person) => (
+          <Box component="li" key={person.name}>
             <Chip
-              label={name}
+              label={person.name}
               variant="outlined"
               avatar={
                 <Avatar
-                  src={personPhotoUrl(name)}
+                  src={person.photo || personPhotoUrl(person.name)}
                   alt=""
                   sx={{
                     bgcolor: 'secondary.light',
@@ -40,7 +40,7 @@ export default function AlumniSection() {
                     fontWeight: 600,
                   }}
                 >
-                  {personInitials(name)}
+                  {personInitials(person.name)}
                 </Avatar>
               }
               sx={{
