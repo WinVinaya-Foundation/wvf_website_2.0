@@ -1,5 +1,4 @@
 import type { CtaLink, PersonEntry } from '../../model/content';
-
 // Founders
 import akilaImg from '../../assets/team/founders/Akila.png';
 import sivaImg from '../../assets/team/founders/Siva.png';
@@ -44,19 +43,19 @@ export const leadership: PersonEntry[] = [
     name: 'Seethalakshmi Kupuraj',
     role: 'Co-Founder',
     photo: akilaImg,
-    linkedin: 'https://www.linkedin.com/in/seethalakshmi-kupuraj',
+    linkedin: 'https://www.linkedin.com/in/dei-champ-akila/',
   },
   {
     name: 'Sivasankar Jayagopal',
     role: 'Founder Chairman',
     photo: sivaImg,
-    linkedin: 'https://www.linkedin.com/in/sivasankarjayagopal',
+    linkedin: 'https://www.linkedin.com/in/shivajayagopal/',
   },
   {
     name: 'Vijay Kirpalani',
     role: 'Trustee',
     photo: vijayImg,
-    linkedin: 'https://www.linkedin.com/company/winvinaya-foundation',
+    linkedin: 'https://www.linkedin.com/in/vijaykirpalani/',
   },
 ];
 
@@ -83,7 +82,7 @@ export const employees: PersonEntry[] = [
   { name: 'Nagarathna', role: 'Lead Trainer', linkedin: 'https://www.linkedin.com/in/nagaratna-m-b3710012b/', photo: nagaratnaImg },
   { name: 'Rathna PM', role: 'Sourcing Coordinator', linkedin: 'https://www.linkedin.com/in/rathna-p-m-394b7297/', photo: rathnaImg },
   { name: 'Yogasri', role: 'Sourcing Coordinator Lead', linkedin: 'https://www.linkedin.com/in/yogasri/', photo: '' },
-  { name: 'Vijayanthi Raji', role: 'Complaience & Finance Manager', linkedin: 'https://www.linkedin.com/in/vijayanthi-raji-716201382/', photo: '' },
+  { name: 'Vijayanthi Raji', role: 'Compliance & Finance Manager', linkedin: 'https://www.linkedin.com/in/vijayanthi-raji-716201382/', photo: '' },
   { name: 'Lavanya Priya', role: 'Placement Coordinator', linkedin: 'https://www.linkedin.com/in/lavanya-pinapothu-535134260/', photo: '' },
 ];
 
@@ -146,7 +145,7 @@ export const alumni: PersonEntry[] = [
   { name: 'Yashika Godugu', role: 'Formar', linkedin: '', photo: '' },
   { name: 'Rashmi Venugopal', role: 'Formar', linkedin: '', photo: '' },
   { name: 'Vaishnavi Gaitonde', role: 'Formar', linkedin: '', photo: '' },
-  { name: 'Susan George', role: 'Formar', linkedin: '', photo: '' },
+  { name: 'Susan George', role: 'Formar', linkedin: '', photo: "../../../assets/team/alumni/SusanGeorge.png" },
 ];
 
 export const teamClosingCta = {
