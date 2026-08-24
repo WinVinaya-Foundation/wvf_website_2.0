@@ -1,7 +1,7 @@
 import type { CtaLink, PersonEntry } from '../../model/content';
 // Founders
-import akilaImg from '../../assets/team/founders/Akila.png';
-import sivaImg from '../../assets/team/founders/Siva.png';
+import akilaImg from '../../assets/team/founders/Akila_Sankar.png';
+import sivaImg from '../../assets/team/founders/Sivasankar_jayagopal.png';
 import vijayImg from '../../assets/team/founders/VijayKirpalani.png';
 
 // Board of Advisors
@@ -25,6 +25,9 @@ import mariMuthuImg from '../../assets/team/employees/MariMuthu.png';
 import jogeshImg from '../../assets/team/employees/Jogesh.png';
 import nagaratnaImg from '../../assets/team/employees/Nagaratna.png';
 import rathnaImg from '../../assets/team/employees/Rathna.png';
+import yogasriImg from '../../assets/team/employees/Yogasri.png';
+import vijayanthiImg from '../../assets/team/employees/Vijayanthi_Raji.png';
+import lavanyapriyaImg from '../../assets/team/employees/Lavanya_Priya.png';
 
 // Consultants
 import kasthuriImg from '../../assets/team/consultants/Kasthuri.png';
@@ -32,6 +35,7 @@ import ambikaImg from '../../assets/team/consultants/Ambika.png';
 import christelImg from '../../assets/team/consultants/ChristelNaomiRoberts.png';
 import pricillaImg from '../../assets/team/consultants/Pricilla.png';
 import gayathriImg from '../../assets/team/consultants/Gayathri.png';
+import mubarakpashaImg from '../../assets/team/consultants/Mubarakpasha.png';
 
 export const teamHero = {
   headline: 'Our Team',
@@ -40,7 +44,7 @@ export const teamHero = {
 
 export const leadership: PersonEntry[] = [
   {
-    name: 'Seethalakshmi Kupuraj',
+    name: 'Akila Sankar',
     role: 'Co-Founder',
     photo: akilaImg,
     linkedin: 'https://www.linkedin.com/in/dei-champ-akila/',
@@ -81,14 +85,14 @@ export const employees: PersonEntry[] = [
   { name: 'Jogeswara Rao', role: 'Junior Trainer', linkedin: 'https://www.linkedin.com/in/jogesh-video-expert/', photo: jogeshImg },
   { name: 'Nagarathna', role: 'Lead Trainer', linkedin: 'https://www.linkedin.com/in/nagaratna-m-b3710012b/', photo: nagaratnaImg },
   { name: 'Rathna PM', role: 'Sourcing Coordinator', linkedin: 'https://www.linkedin.com/in/rathna-p-m-394b7297/', photo: rathnaImg },
-  { name: 'Yogasri', role: 'Sourcing Coordinator Lead', linkedin: 'https://www.linkedin.com/in/yogasri/', photo: '' },
-  { name: 'Vijayanthi Raji', role: 'Compliance & Finance Manager', linkedin: 'https://www.linkedin.com/in/vijayanthi-raji-716201382/', photo: '' },
-  { name: 'Lavanya Priya', role: 'Placement Coordinator', linkedin: 'https://www.linkedin.com/in/lavanya-pinapothu-535134260/', photo: '' },
+  { name: 'Yogasri', role: 'Sourcing Coordinator Lead', linkedin: 'https://www.linkedin.com/in/yogasri/', photo: yogasriImg },
+  { name: 'Vijayanthi Raji', role: 'Compliance & Finance Manager', linkedin: 'https://www.linkedin.com/in/vijayanthi-raji-716201382/', photo: vijayanthiImg },
+  { name: 'Lavanya Priya', role: 'Placement Coordinator', linkedin: 'https://www.linkedin.com/in/lavanya-pinapothu-535134260/', photo: lavanyapriyaImg },
 ];
 
 export const consultants: PersonEntry[] = [
   { name: 'Kasthuri V', role: 'Placement & Outreach', linkedin: 'https://www.linkedin.com/in/kasthuri-v-970461236/', photo: kasthuriImg },
-  { name: 'Mubarak pasha', role: 'Placement Outreach', linkedin: '', photo: '' },
+  { name: 'Mubarak pasha', role: 'Placement Outreach', linkedin: '', photo: mubarakpashaImg },
   { name: 'Ambika', role: 'Software Consultant', linkedin: 'https://www.linkedin.com/in/ambika-k-b73715247/', photo: ambikaImg },
   { name: 'Christel Naomi Roberts', role: 'Project Coordinator', linkedin: 'https://www.linkedin.com/in/christel-naomi-roberts-954375158/', photo: christelImg },
   { name: 'Pricilla', role: 'Lead English & Softskills Trainer', linkedin: 'https://www.linkedin.com/in/pricillalifecoach/', photo: pricillaImg },

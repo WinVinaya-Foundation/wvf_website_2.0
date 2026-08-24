@@ -8,18 +8,18 @@ import { Link } from '@tanstack/react-router';
 import { Button, SectionContainer } from '../../components';
 import { heroContent, impactCounters } from '../../pages/home/homeContent';
 import StatTile from './StatTile';
-import heroBg1 from '../../assets/hero/Gemini_Generated_Image_8ou4yq8ou4yq8ou4.png';
-import heroBg2 from '../../assets/hero/Gemini_Generated_Image_ssvx65ssvx65ssvx.png';
-import heroBg3 from '../../assets/hero/Gemini_Generated_Image_i88vdai88vdai88v.png';
-import heroBg4 from '../../assets/hero/Gemini_Generated_Image_iub17kiub17kiub1.png';
-import heroBg5 from '../../assets/hero/Gemini_Generated_Image_45h7zd45h7zd45h7.png';
+import heroBg1 from '../../assets/hero/margadarshan.png';
+import heroBg2 from '../../assets/hero/nammajobathon.png';
+import heroBg3 from '../../assets/hero/nish_jobmela_akila_speech.png';
+import heroBg4 from '../../assets/hero/margadarshan_discussion.png';
+import heroBg5 from '../../assets/hero/nammajobathon_interview.png';
 
 const heroImages = [
   { src: heroBg1, label: 'Hero Slide 1' },
   { src: heroBg2, label: 'Hero Slide 2' },
   { src: heroBg3, label: 'Hero Slide 3' },
   { src: heroBg4, label: 'Hero Slide 4' },
-  { src: heroBg5, label: 'Hero Slide 5'},
+  { src: heroBg5, label: 'Hero Slide 5' },
 ];
 
 export default function HeroSection() {
