@@ -3,14 +3,17 @@ import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { AppDialog, Chip, SectionContainer, SectionHeading } from '../../../components';
 import { useGetPublicStoriesQuery } from '../../../store/api/storiesApi';
+import { featuredStories } from '../../../pages/impact/successStoriesContent';
 import { accentForIndex } from './storyAccents';
+import { getYouTubeEmbedUrl } from './youtube';
 import StoryCard from './StoryCard';
 
-/** Grid-of-cards + play-in-dialog layout: fetches dynamic success stories from backend API */
+/** Grid-of-cards + play-in-dialog layout: fetches dynamic success stories from backend API with fallback */
 export default function FeaturedStoriesSection() {
-  const { data: stories = [], isFetching } = useGetPublicStoriesQuery();
+  const { data: apiStories = [], isFetching } = useGetPublicStoriesQuery();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  const stories = apiStories.length > 0 ? apiStories : featuredStories;
   const activeStory = openIndex !== null ? stories[openIndex] : undefined;
   const activeAccent = openIndex !== null ? accentForIndex(openIndex) : 'primary';
 
@@ -37,12 +40,23 @@ export default function FeaturedStoriesSection() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-            gap: { xs: 4, md: 5 },
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: { xs: 3, sm: 3.5, md: 4 },
+            maxWidth: { xs: 460, sm: '100%' },
+            mx: 'auto',
           }}
         >
           {stories.map((story, index) => (
-            <StoryCard key={story.id} story={story} accent={accentForIndex(index)} onOpen={() => setOpenIndex(index)} />
+            <StoryCard
+              key={'id' in story ? (story as { id: string }).id : story.name}
+              story={story}
+              accent={accentForIndex(index)}
+              onOpen={() => setOpenIndex(index)}
+            />
           ))}
         </Box>
       )}
@@ -64,14 +78,14 @@ export default function FeaturedStoriesSection() {
             sx={{
               position: 'relative',
               width: '100%',
-              pt: '56.25%',
+              aspectRatio: '16 / 9',
               borderRadius: 2,
               overflow: 'hidden',
               bgcolor: 'common.black',
             }}
           >
             <iframe
-              src={activeStory.videoUrl}
+              src={getYouTubeEmbedUrl(activeStory.videoUrl)}
               title={`${activeStory.name}'s success story`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
@@ -87,3 +101,4 @@ export default function FeaturedStoriesSection() {
     </SectionContainer>
   );
 }
+
