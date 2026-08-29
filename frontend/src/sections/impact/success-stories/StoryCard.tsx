@@ -71,6 +71,7 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
             position: 'relative',
             width: '100%',
             aspectRatio: '16 / 9',
+            maxHeight: 200,
             overflow: 'hidden',
             bgcolor: 'common.black',
           }}
@@ -105,7 +106,7 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
                 bgcolor: (theme) => alpha(theme.palette[accent].main, 0.16),
               }}
             >
-              <PersonRoundedIcon sx={{ fontSize: 52, color: `${accent}.main` }} />
+              <PersonRoundedIcon sx={{ fontSize: 44, color: `${accent}.main` }} />
             </Box>
           )}
 
@@ -121,16 +122,17 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
 
           {/* Video Story Badge */}
           <Chip
-            icon={<OndemandVideoRoundedIcon sx={{ fontSize: '14px !important', color: 'inherit' }} />}
+            icon={<OndemandVideoRoundedIcon sx={{ fontSize: '13px !important', color: 'inherit' }} />}
             label="VIDEO STORY"
             size="small"
             sx={{
               position: 'absolute',
-              top: 12,
-              left: 12,
+              top: 10,
+              left: 10,
               fontWeight: 800,
-              fontSize: '0.68rem',
-              letterSpacing: 0.6,
+              fontSize: '0.65rem',
+              letterSpacing: 0.5,
+              height: 22,
               color: 'common.white',
               bgcolor: 'rgba(0, 0, 0, 0.65)',
               backdropFilter: 'blur(8px)',
@@ -153,49 +155,51 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: { xs: 46, sm: 52 },
-              height: { xs: 46, sm: 52 },
+              width: 44,
+              height: 44,
               borderRadius: '50%',
               bgcolor: (theme) => theme.palette[accent].main,
               color: (theme) => theme.palette[accent].contrastText,
-              boxShadow: (theme) => `0 8px 24px ${alpha(theme.palette[accent].main, 0.45)}`,
+              boxShadow: (theme) => `0 6px 20px ${alpha(theme.palette[accent].main, 0.45)}`,
               transition: 'transform 0.25s ease, box-shadow 0.25s ease',
             }}
           >
-            <PlayArrowRoundedIcon sx={{ fontSize: { xs: 26, sm: 30 } }} />
+            <PlayArrowRoundedIcon sx={{ fontSize: 26 }} />
           </Box>
         </Box>
 
         {/* Card Content */}
         <Box
           sx={{
-            p: { xs: 2.5, sm: 3 },
+            p: 2.25,
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 1,
           }}
         >
           <Typography
-            variant="h6"
+            variant="subtitle1"
             component="h3"
             sx={{
               fontWeight: 800,
               color: 'text.primary',
-              fontSize: { xs: '1.05rem', sm: '1.15rem' },
+              fontSize: '1.025rem',
               lineHeight: 1.3,
-              mb: 0.5,
+              mb: 0.25,
             }}
           >
             {story.name}
           </Typography>
 
           <Typography
-            variant="subtitle2"
+            variant="caption"
             sx={{
               color: `${accent}.dark`,
               fontWeight: 700,
-              fontSize: '0.875rem',
-              mb: 1.5,
+              fontSize: '0.8rem',
+              mb: 1.25,
+              textTransform: 'uppercase',
+              letterSpacing: 0.3,
             }}
           >
             {story.role}
@@ -205,12 +209,12 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
             variant="body2"
             sx={{
               color: 'text.secondary',
-              lineHeight: 1.6,
-              fontSize: '0.9rem',
-              mb: 2.5,
+              lineHeight: 1.55,
+              fontSize: '0.85rem',
+              mb: 2,
               flexGrow: 1,
               display: '-webkit-box',
-              WebkitLineClamp: 3,
+              WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
             }}
@@ -221,7 +225,7 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
           {/* Action Footer */}
           <Box
             sx={{
-              pt: 2,
+              pt: 1.5,
               borderTop: '1px solid',
               borderColor: (theme) => alpha(theme.palette.divider, 0.8),
               display: 'flex',
@@ -229,9 +233,9 @@ export default function StoryCard({ story, accent, onOpen }: StoryCardProps) {
               justifyContent: 'space-between',
             }}
           >
-            <Stack direction="row" spacing={0.6} sx={{ alignItems: 'center', color: `${accent}.dark` }}>
-              <PlayArrowRoundedIcon sx={{ fontSize: 18 }} />
-              <Typography sx={{ fontSize: '0.825rem', fontWeight: 800, letterSpacing: 0.3 }}>
+            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', color: `${accent}.dark` }}>
+              <PlayArrowRoundedIcon sx={{ fontSize: 16 }} />
+              <Typography sx={{ fontSize: '0.775rem', fontWeight: 800, letterSpacing: 0.3 }}>
                 Watch Story
               </Typography>
             </Stack>

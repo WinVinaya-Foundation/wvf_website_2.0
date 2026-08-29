@@ -40,24 +40,12 @@ export default function FeaturedStoriesSection() {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: stories.length === 1 ? 'minmax(0, 420px)' : 'repeat(2, 1fr)',
-              md:
-                stories.length === 1
-                  ? 'minmax(0, 420px)'
-                  : stories.length === 2
-                    ? 'repeat(2, minmax(0, 420px))'
-                    : 'repeat(3, 1fr)',
-            },
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 340px))',
             justifyContent: 'center',
-            gap: { xs: 3, sm: 3.5, md: 4 },
-            maxWidth: {
-              xs: 440,
-              sm: stories.length === 1 ? 440 : '100%',
-              md: stories.length === 1 ? 440 : stories.length === 2 ? 880 : '100%',
-            },
+            gap: { xs: 2.5, sm: 3, md: 3.5 },
+            maxWidth: 1140,
             mx: 'auto',
+            width: '100%',
           }}
         >
           {stories.map((story, index) => (
