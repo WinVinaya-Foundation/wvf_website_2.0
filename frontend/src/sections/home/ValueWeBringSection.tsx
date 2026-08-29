@@ -9,7 +9,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { Link } from '@tanstack/react-router';
 import { Button, SectionContainer } from '../../components';
 import { valueWeBringContent } from '../../pages/home/homeContent';
-import featuredImg from '../../assets/hero/Gemini_Generated_Image_8ou4yq8ou4yq8ou4.png';
+import featuredImg from '../../assets/hero/margadarshan_discussion.png';
 
 const ICON_MAP = {
   school: SchoolRoundedIcon,

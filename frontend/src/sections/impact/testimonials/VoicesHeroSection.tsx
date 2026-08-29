@@ -3,11 +3,11 @@ import { alpha } from '@mui/material/styles';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { SectionContainer } from '../../../components';
 import { voicesHero } from '../../../pages/impact/testimonialsContent';
-import heroImg1 from '../../../assets/hero/Gemini_Generated_Image_8ou4yq8ou4yq8ou4.png';
-import heroImg2 from '../../../assets/hero/Gemini_Generated_Image_ssvx65ssvx65ssvx.png';
-import heroImg3 from '../../../assets/hero/Gemini_Generated_Image_i88vdai88vdai88v.png';
-import heroImg4 from '../../../assets/hero/Gemini_Generated_Image_iub17kiub17kiub1.png';
-import heroImg5 from '../../../assets/hero/Gemini_Generated_Image_45h7zd45h7zd45h7.png';
+import heroImg1 from '../../../assets/hero/margadarshan.png';
+import heroImg2 from '../../../assets/hero/nammajobathon.png';
+import heroImg3 from '../../../assets/hero/nish_jobmela_akila_speech.png';
+import heroImg4 from '../../../assets/hero/margadarshan_discussion.png';
+import heroImg5 from '../../../assets/hero/nammajobathon_interview.png';
 
 const collageImages = [heroImg1, heroImg2, heroImg3, heroImg4, heroImg5];
 
