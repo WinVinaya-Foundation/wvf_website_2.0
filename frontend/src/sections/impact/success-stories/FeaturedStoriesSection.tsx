@@ -42,11 +42,21 @@ export default function FeaturedStoriesSection() {
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
+              sm: stories.length === 1 ? 'minmax(0, 420px)' : 'repeat(2, 1fr)',
+              md:
+                stories.length === 1
+                  ? 'minmax(0, 420px)'
+                  : stories.length === 2
+                    ? 'repeat(2, minmax(0, 420px))'
+                    : 'repeat(3, 1fr)',
             },
+            justifyContent: 'center',
             gap: { xs: 3, sm: 3.5, md: 4 },
-            maxWidth: { xs: 460, sm: '100%' },
+            maxWidth: {
+              xs: 440,
+              sm: stories.length === 1 ? 440 : '100%',
+              md: stories.length === 1 ? 440 : stories.length === 2 ? 880 : '100%',
+            },
             mx: 'auto',
           }}
         >
