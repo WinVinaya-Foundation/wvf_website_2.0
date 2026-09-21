@@ -87,10 +87,15 @@ jobs:
 
             cd "$DEPLOY_PATH"
 
+            # Pull latest git commit so deploy/ scripts are present
+            echo "Fetching latest changes from origin/${{ github.ref_name }}..."
+            git fetch origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+
             # Ensure deployment scripts are executable
             chmod +x deploy/*.sh
 
             # Execute master deployment pipeline with health check
-            ./deploy/deploy.sh --branch ${{ github.ref_name }}
+            ./deploy/deploy.sh --skip-git --branch ${{ github.ref_name }}
 
             echo "WinVinaya Deployment Pipeline Completed Successfully!"
