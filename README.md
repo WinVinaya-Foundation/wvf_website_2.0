@@ -6,7 +6,7 @@ backend (Razorpay-backed donations API).
 ## Project Structure
 
 ```
-wvf_website_new/
+wvf_website_2.0/
 ├── frontend/   React 19 + TypeScript + Vite + MUI + TanStack Router
 └── backend/    Express + TypeScript + Prisma + PostgreSQL (donations/payments API)
 ```
@@ -26,11 +26,11 @@ npm run dev
 
 The site runs at `http://localhost:5173`. Other useful scripts (run from `frontend/`):
 
-| Command | Purpose |
-| --- | --- |
-| `npm run build` | Type-check (`tsc -b`) and build for production into `frontend/dist/` |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run Oxlint |
+| Command           | Purpose                                                              |
+| ----------------- | -------------------------------------------------------------------- |
+| `npm run build`   | Type-check (`tsc -b`) and build for production into `frontend/dist/` |
+| `npm run preview` | Preview the production build locally                                 |
+| `npm run lint`    | Run Oxlint                                                           |
 
 The frontend's dev server proxies `/api/*` requests to the backend at `http://localhost:4000`
 (see `frontend/vite.config.ts`), so the backend should be running alongside it for pages that
@@ -65,13 +65,13 @@ npm run dev
 The API runs at `http://localhost:4000` (health check: `GET /api/health`). Other scripts (run
 from `backend/`):
 
-| Command | Purpose |
-| --- | --- |
-| `npm run build` | Compile TypeScript to `backend/dist/` |
-| `npm run start` | Run the compiled build (`node dist/index.js`) |
+| Command                   | Purpose                                            |
+| ------------------------- | -------------------------------------------------- |
+| `npm run build`           | Compile TypeScript to `backend/dist/`              |
+| `npm run start`           | Run the compiled build (`node dist/index.js`)      |
 | `npm run prisma:generate` | Regenerate the Prisma client after a schema change |
-| `npm run prisma:migrate` | Create/apply a database migration |
-| `npm run lint` | Type-check (`tsc --noEmit`) |
+| `npm run prisma:migrate`  | Create/apply a database migration                  |
+| `npm run lint`            | Type-check (`tsc --noEmit`)                        |
 
 **Never commit `backend/.env`** — it's gitignored, and `backend/.env.example` documents every
 variable it needs with placeholder values.
