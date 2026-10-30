@@ -6,7 +6,7 @@ export const programsHeroContent = {
   subheadline:
     'We train persons with disabilities in the same in-demand technical and business skills that top companies hire for — free of cost, and built around real accessibility.',
   impactStats: [
-    { label: 'Candidates trained', value: '1,000+' },
+    { label: 'Candidates trained', value: '1,640+' },
     { label: 'States + Nepal', value: '24' },
     { label: 'Disability categories represented', value: '18' },
   ],

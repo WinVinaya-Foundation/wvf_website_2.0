@@ -12,7 +12,7 @@ export const featuredAward = {
   date: 'December 1, 2023',
   event: 'Bengaluru Tech Summit',
   organization: 'AssisTech Foundation',
-  photoUrl: '/awards/atf-award-ceremony.jpg',
+  photoUrl: '/awards/atf_best_initiative_2023.jpg',
   badgeUrl: '/awards/atf-badge.png',
 };
 
@@ -21,11 +21,25 @@ export const awardGrid: AwardEntry[] = [
     title: 'Great Place to Work Certified',
     body: 'WinVinaya Foundation is certified as a Great Place to Work, reflecting the culture and employee experience built within the organization.',
     icon: 'premium',
+    photoUrl: '/awards/gptw_wvf_2024-25.jpg',
   },
   {
-    title: 'AssisTech Award',
-    body: 'Recognized by the AssisTech Foundation for our work in inclusive employment.',
+    title: 'Great Place to Work Certified',
+    body: 'WinVinaya Foundation is certified as a Great Place to Work, reflecting the culture and employee experience built within the organization.',
     icon: 'award',
+    photoUrl: '/awards/gptw_wvf_2025-26.jpg',
+  },
+  {
+    title: 'Rotary DEI Award',
+    body: 'WinVinaya Foundation is certified as a Great Place to Work, reflecting the culture and employee experience built within the organization.',
+    icon: 'award',
+    photoUrl: '/awards/rotary_dei_award_wvf.jpg',
+  },
+  {
+    title: 'Acumen Fellowship',
+    body: 'WinVinaya Foundation is certified as a Great Place to Work, reflecting the culture and employee experience built within the organization.',
+    icon: 'award',
+    photoUrl: '/awards/acumen_fellow_akila_2024.jpg',
   },
 ];
 

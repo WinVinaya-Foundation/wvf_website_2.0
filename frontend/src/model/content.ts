@@ -26,6 +26,8 @@ export interface AwardEntry {
   title: string;
   body: string;
   icon: TimelineIconKey;
+  photoUrl?: string;
+  badgeUrl?: string;
 }
 
 export interface DocumentEntry {

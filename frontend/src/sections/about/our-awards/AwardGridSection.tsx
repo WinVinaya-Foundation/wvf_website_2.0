@@ -3,7 +3,7 @@ import { alpha } from '@mui/material/styles';
 import AddRounded from '@mui/icons-material/AddRounded';
 import EmojiEventsRounded from '@mui/icons-material/EmojiEventsRounded';
 import WorkspacePremiumRounded from '@mui/icons-material/WorkspacePremiumRounded';
-import { Card, CardContent, SectionContainer, SectionHeading } from '../../../components';
+import { Card, CardContent, PhotoFrame, SectionContainer, SectionHeading } from '../../../components';
 import { awardGrid } from '../../../pages/about/awardsContent';
 import type { TimelineIconKey } from '../../../model/content';
 
@@ -29,26 +29,50 @@ export default function AwardGridSection() {
         {awardGrid.map((award) => {
           const Icon = ICONS[award.icon];
           return (
-            <Card key={award.title} sx={{ height: '100%', overflow: 'hidden' }}>
+            <Card key={award.title} sx={{ height: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ height: 4, bgcolor: 'primary.main' }} />
-              <CardContent sx={{ p: 3 }}>
-                <Box
-                  aria-hidden="true"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 56,
-                    height: 56,
-                    borderRadius: '50%',
-                    bgcolor: 'primary.light',
-                    color: 'primary.dark',
-                    boxShadow: (theme) => `0 0 0 6px ${alpha(theme.palette.primary.main, 0.1)}`,
-                    mb: 2,
-                  }}
-                >
-                  <Icon fontSize="medium" />
-                </Box>
+              {award.photoUrl && (
+                <PhotoFrame
+                  src={award.photoUrl}
+                  alt={award.title}
+                  fallbackIcon={<Icon />}
+                  aspectRatio="16 / 9"
+                  sx={{ borderRadius: 0 }}
+                />
+              )}
+              <CardContent sx={{ p: 3, flexGrow: 1 }}>
+                {!award.photoUrl && (
+                  <Box
+                    aria-hidden="true"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 56,
+                      height: 56,
+                      borderRadius: '50%',
+                      bgcolor: 'primary.light',
+                      color: 'primary.dark',
+                      boxShadow: (theme) => `0 0 0 6px ${alpha(theme.palette.primary.main, 0.1)}`,
+                      mb: 2,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {award.badgeUrl ? (
+                      <PhotoFrame
+                        src={award.badgeUrl}
+                        alt={`${award.title} badge`}
+                        fallbackIcon={<Icon fontSize="medium" />}
+                        aspectRatio="1 / 1"
+                        objectFit="contain"
+                        fallbackBgcolor="primary.light"
+                        sx={{ borderRadius: '50%' }}
+                      />
+                    ) : (
+                      <Icon fontSize="medium" />
+                    )}
+                  </Box>
+                )}
                 <Typography variant="h6" component="p" gutterBottom>
                   {award.title}
                 </Typography>
