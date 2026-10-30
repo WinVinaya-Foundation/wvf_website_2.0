@@ -103,37 +103,17 @@ Open GitHub in your browser and create a **Pull Request (PR)** targeting the `ma
 
 ## 3. Production Continuous Deployment (CD) Steps
 
-When code is merged into `main`, GitHub Actions automatically connects to your production server via SSH and executes the following deployment commands:
+When code is merged into `main`, GitHub Actions automatically connects to your production server via SSH and executes the modular deployment script located in `deploy/deploy.sh`:
 
 ```bash
 # 1. Navigate to repository root on server
-cd /var/www/wvf_website
+cd /var/www/wvf_website_2.0
 
-# 2. Fetch & hard reset to latest main commit
-git fetch origin
-git reset --hard origin/main
+# 2. Make deployment scripts executable
+chmod +x deploy/*.sh
 
-# 3. Update & compile Backend
-cd /var/www/wvf_website/backend
-npm ci --production=false
-npx prisma generate
-npx prisma db push
-npm run build
-
-# 4. Update & compile Frontend
-cd /var/www/wvf_website/frontend
-npm ci
-npm run build
-
-# 5. Set correct file permissions for Nginx
-sudo chown -R www-data:www-data /var/www/wvf_website/frontend/dist
-sudo chmod -R 755 /var/www/wvf_website/frontend/dist
-
-# 6. Zero-Downtime PM2 Express Backend Reload
-pm2 reload wvf-backend || pm2 start dist/index.js --name "wvf-backend"
-
-# 7. Reload Nginx Web Server
-sudo systemctl reload nginx
+# 3. Run automated deployment pipeline (pulls git, builds backend, builds frontend, reloads PM2/Nginx, and runs health checks)
+./deploy/deploy.sh --branch main
 ```
 
 ---

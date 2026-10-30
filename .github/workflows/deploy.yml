@@ -34,6 +34,8 @@ jobs:
           npm ci
 
       - name: Validate Backend TypeScript & Prisma Schema
+        env:
+          DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy?schema=public"
         run: |
           cd backend
           npx prisma validate
@@ -50,6 +52,11 @@ jobs:
         run: |
           cd frontend
           npm run build
+
+      # Shell Scripts Validation
+      - name: Validate Deployment Scripts Syntax
+        run: |
+          bash -n deploy/*.sh
 
   # -------------------------------------------------------------
   # Job 2: Continuous Deployment (SSH to Production Server)
@@ -70,34 +77,25 @@ jobs:
           port: ${{ secrets.PRODUCTION_PORT || 22 }}
           script: |
             set -e
-            echo "Starting WinVinaya Automated Deployment..."
+            echo "Starting WinVinaya Automated Deployment via deploy.sh..."
 
-            cd /var/www/wvf_website
+            # Resolve project root directory on server
+            DEPLOY_PATH="${{ secrets.PRODUCTION_DEPLOY_PATH || '/var/www/wvf_website_2.0' }}"
+            if [ ! -d "$DEPLOY_PATH" ] && [ -d "/var/www/wvf_website" ]; then
+              DEPLOY_PATH="/var/www/wvf_website"
+            fi
 
-            # Pull latest main branch
-            git fetch origin
-            git reset --hard origin/main
+            cd "$DEPLOY_PATH"
 
-            # Build Backend
-            cd /var/www/wvf_website/backend
-            npm ci
-            npx prisma generate
-            npx prisma db push
-            npm run build
+            # Pull latest git commit so deploy/ scripts are present
+            echo "Fetching latest changes from origin/${{ github.ref_name }}..."
+            git fetch origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
 
-            # Build Frontend
-            cd /var/www/wvf_website/frontend
-            npm ci
-            npm run build
+            # Ensure deployment scripts are executable
+            chmod +x deploy/*.sh
 
-            # Set static file permissions for Nginx
-            sudo chown -R www-data:www-data /var/www/wvf_website/frontend/dist
-            sudo chmod -R 755 /var/www/wvf_website/frontend/dist
+            # Execute master deployment pipeline with health check
+            ./deploy/deploy.sh --skip-git --branch ${{ github.ref_name }}
 
-            # Zero-downtime PM2 reload
-            pm2 reload wvf-backend || pm2 start dist/index.js --name "wvf-backend"
-
-            # Reload Nginx Web Server
-            sudo systemctl reload nginx
-
-            echo "WinVinaya Deployment Completed Successfully!"
+            echo "WinVinaya Deployment Pipeline Completed Successfully!"
